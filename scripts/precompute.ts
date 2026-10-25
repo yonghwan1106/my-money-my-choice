@@ -60,6 +60,15 @@ function maxOut(a: AnalyzeResult, w: WeekResult | undefined): number {
   return m;
 }
 
+/** §7-6 「{첫 송금 krw}」: 그 주 송금(transfer_out) 가운데 날짜·시각이 가장 이른 한 건의 금액. 송금이 없으면 null. */
+function firstTransferOut(a: AnalyzeResult, w: WeekResult | undefined): number | null {
+  if (!w) return null;
+  const ids = new Set(w.txIds);
+  const outs = a.txs.filter((t) => ids.has(t.id) && t.amount < 0 && t.category === "transfer_out")
+    .sort((x, y) => x.day - y.day || (x.minute ?? 0) - (y.minute ?? 0) || Number(x.id.slice(1)) - Number(y.id.slice(1)));
+  return outs.length ? -outs[0].amount : null;
+}
+
 function sameWeeks(x: AnalyzeResult, y: AnalyzeResult): boolean {
   return x.weeks.length === y.weeks.length && x.weeks.every((w, i) =>
     w.level === y.weeks[i].level && w.prob === y.weeks[i].prob && w.pattern === y.weeks[i].pattern);
@@ -117,6 +126,7 @@ async function main() {
       compare = {
         b0_first_week: b0w?.week ?? null, b0_first_max_krw: maxOut(a1, b0w),
         model_first_week: mw?.week ?? null, model_first_level: mw?.level ?? null, model_first_max_krw: maxOut(a1, mw),
+        model_first_transfer_krw: firstTransferOut(a1, mw),
       };
     } else if (id === "D") {
       const rows: number[] = meta.event_rows ?? [];

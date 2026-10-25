@@ -14,6 +14,8 @@ export interface CompareA {
   model_first_week: number | null;
   model_first_level: string | null;
   model_first_max_krw: number | null;
+  /** §7-6 「{첫 송금 krw}」 = 그 주 송금 가운데 가장 이른 한 건의 금액(precompute.ts firstTransferOut) */
+  model_first_transfer_krw?: number | null;
 }
 export interface CompareD {
   fridge_week: number | null;
@@ -21,13 +23,21 @@ export interface CompareD {
   model_level: string | null;
 }
 
-type TxLite = { id: string; amount: number; category: string };
+type TxLite = { id: string; amount: number; category: string; day?: number; minute?: number | null };
 const OUT_CATS = ["transfer_out", "cash_withdraw", "card_daily", "micro_payment"];
 
 function maxOut(w: WeekResult, txs: TxLite[]): number | null {
   const ids = new Set(w.txIds);
   const outs = txs.filter((t) => ids.has(t.id) && t.amount < 0 && OUT_CATS.includes(t.category)).map((t) => -t.amount);
   return outs.length ? Math.max(...outs) : null;
+}
+
+/** 그 주 송금 가운데 날짜·시각이 가장 이른 한 건의 금액(§7-6 「첫 송금」). */
+function firstTransfer(w: WeekResult, txs: TxLite[]): number | null {
+  const ids = new Set(w.txIds);
+  const outs = txs.filter((t) => ids.has(t.id) && t.amount < 0 && t.category === "transfer_out")
+    .sort((x, y) => (x.day ?? 0) - (y.day ?? 0) || (x.minute ?? 0) - (y.minute ?? 0) || Number(x.id.slice(1)) - Number(y.id.slice(1)));
+  return outs.length ? -outs[0].amount : null;
 }
 
 export function computeCompareA(weeks: WeekResult[], txs: TxLite[]): CompareA {
@@ -39,6 +49,7 @@ export function computeCompareA(weeks: WeekResult[], txs: TxLite[]): CompareA {
     model_first_week: m?.week ?? null,
     model_first_level: m?.level ?? null,
     model_first_max_krw: m ? maxOut(m, txs) : null,
+    model_first_transfer_krw: m ? firstTransfer(m, txs) : null,
   };
 }
 
@@ -99,7 +110,7 @@ export function CompareBoard() {
                     {a.b0_first_week}주 — {a.b0_first_max_krw !== null ? `${krw(a.b0_first_max_krw)}이 나간 뒤` : ""}
                   </td>
                   <td className="px-2 py-3 font-semibold">
-                    {a.model_first_week}주 — {a.model_first_max_krw !== null ? `${krw(a.model_first_max_krw)}을 보내기 시작한 주` : ""}
+                    {a.model_first_week}주 — {a.model_first_transfer_krw != null ? `${krw(a.model_first_transfer_krw)}을 보내기 시작한 주` : ""}
                   </td>
                 </tr>
               ) : null}

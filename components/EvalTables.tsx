@@ -313,6 +313,9 @@ export function HelpernoteTable({ h }: { h: HelpernoteEval | null }) {
         ["금지어", `${h.banned_hits}건`],
         ["상대 의도 단정", `${h.intent_hits}건`],
         ["기본 문장으로 바뀐 수", `${h.template_fallbacks}건`],
+        ...(h.raw && h.raw.units !== undefined && h.raw.style !== undefined && h.raw.advice !== undefined
+          ? ([["단위·문체·조언 걸린 시도(다시 쓰기 전)", `${h.raw.units + h.raw.style + h.raw.advice}건 / ${h.raw.attempts}번`]] as [string, string][])
+          : []),
       ]
     : [];
   return (
@@ -320,7 +323,7 @@ export function HelpernoteTable({ h }: { h: HelpernoteEval | null }) {
       <h2 className="h2">알림 요약 검사</h2>
       {h ? (
         <>
-          <p className="mt-1">{h.n}건</p>
+          <p className="mt-1">{h.n}건{h.prompt_version ? ` · ${h.prompt_version}` : ""} · 숫자와 단위가 재료와 같은지, 문장이 「~어요」인지, 조언·권유가 없는지 검사해요.</p>
           <dl className="mt-3 grid grid-cols-2 gap-2 md:grid-cols-3">
             {items.map(([k, v]) => (
               <div key={k} className="card !p-3">

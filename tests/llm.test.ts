@@ -7,8 +7,8 @@ import { cacheClear } from "../lib/llm/cache";
 import { resetLimits } from "../lib/llm/limit";
 import { k0 } from "../lib/llm/k0";
 import { requestKey } from "../lib/llm/hash";
-import { checkSummary, numberTokens, parseJsonText, validateUnderstand } from "../lib/llm/validate";
-import { findNames } from "../lib/llm/banned";
+import { checkSummary, numberTokens, numberUnitPairs, parseJsonText, validateUnderstand } from "../lib/llm/validate";
+import { findAdvice, findNames, findStyleBreaks } from "../lib/llm/banned";
 import { ALL_PATTERNS, helperNoteFacts, helperNoteTemplate, helperNoteTemplateFromFacts } from "../lib/engine/templates";
 import { POST as understandPOST } from "../app/api/understand/route";
 import { POST as helperPOST } from "../app/api/helper-note/route";
@@ -17,7 +17,7 @@ import { FACTS_A20, FACTS_B16, FACTS_C16, FACTS_C18, FACTS_D21, FACTS_EXTREME, m
 
 const UREQ: UnderstandRequest = { prompt_version: "understand-v1", text: "[상대1] 형이 급하다고 빌려 달래서 보냈어요", pattern: "same_person", level: "high" };
 const HREQ: HelperNoteRequest = {
-  prompt_version: "helpernote-v1", pattern: "same_person", level: "high",
+  prompt_version: "helpernote-v2", pattern: "same_person", level: "high",
   facts: { pattern_label: "같은 사람에게 여러 번", level_label: "위험이 높아요", period: "3주", items: { "횟수": "5번", "합계": "147만 원" } },
 };
 
@@ -219,6 +219,40 @@ test("검증기: evidence 부분 문자열·길이, 요약 숫자·금지어·�
   assert.deepEqual(findNames("이번에 같은 사람에게 3주 동안 5번, 모두 147만 원이 나갔어요. 이틀 만에 현금으로 찾았어요."), []);
   assert.deepEqual(findNames("김도현 선생님에게 보냈어요"), ["김도현"]);
   assert.deepEqual(findNames("한지훈에게 5번 보냈어요."), ["한지훈"]);
+});
+
+test("검증기 helpernote-v2: 숫자 옆 단위 대조·문체 「~어요」·조언/권유/약속 금지", () => {
+  const f = { pattern_label: "조금씩 계속", level_label: "살펴보기", period: "5주",
+    items: { "이어진 기간": "5주", "전체 지출이 평소보다 더 나간 돈": "590만 원", "같은 사람에게 보낸 횟수": "4번" } };
+  // 단위
+  assert.deepEqual(numberUnitPairs("1,070만 원, 5주, 4번, 6천 원, 1억 2천만 원"), ["1070|만원", "5|주", "4|번", "6|천원", "1|억", "2|천만원"]);
+  assert.deepEqual(numberUnitPairs("두 번, 세 주"), ["2|번", "3|주"]);
+  assert.equal(checkSummary("5주 동안 전체 지출이 평소보다 590만 원 더 나갔어요.", f).passed, true);
+  assert.equal(checkSummary("5일 동안 전체 지출이 평소보다 590만 원 더 나갔어요.", f).checks.units_match, false); // 5주 → 5일
+  assert.equal(checkSummary("5일 동안 전체 지출이 평소보다 590만 원 더 나갔어요.", f).checks.numbers_match, true); // 숫자만 보면 통과하던 경우
+  assert.equal(checkSummary("5주 동안 590번 나갔어요.", f).checks.units_match, false); // 다른 숫자에 단위를 붙임
+  assert.equal(checkSummary("5개월 동안 590만 원이 더 나갔어요.", f).checks.units_match, false);
+  assert.equal(checkSummary("같은 사람에게 다섯 번 보냈어요.", f).checks.units_match, false); // 고유어 수도 대조(4번 ≠ 다섯 번)
+  assert.equal(checkSummary("같은 사람에게 네 번 보냈어요.", f).checks.units_match, true);
+  assert.equal(checkSummary("590만이 더 나갔어요.", f).checks.units_match, true); // 「만」 = 「만 원」
+  // 「더」는 키에 「더」가 든 값에만(키의 뜻을 차이로 바꾸지 않음)
+  const g = { pattern_label: "평소보다 큰 지출", level_label: "살펴보기", period: "1주", items: { "금액": "1만 원", "평소 한 번": "6천 원" } };
+  assert.equal(checkSummary("평소 한 번에 쓰던 6천 원보다 1만 원이 더 나갔어요.", g).checks.units_match, false);
+  assert.equal(checkSummary("한 번에 1만 원이 나갔어요. 평소에는 한 번에 6천 원쯤 썼어요.", g).checks.units_match, true);
+  assert.equal(checkSummary("전체 지출이 평소보다 590만 원 더 나갔어요.", f).checks.units_match, true);
+  assert.equal(checkSummary("같은 사람에게 4번 더 보냈어요.", f).checks.units_match, false);
+  // 문체
+  assert.equal(checkSummary("5주 동안 590만 원이 더 나갔습니다.", f).checks.style, false);
+  assert.equal(checkSummary("5주 동안 590만 원이 더 나갔어요. 평소와 다릅니다.", f).checks.style, false);
+  assert.equal(checkSummary("5주 동안 590만 원이 더 나갔다.", f).checks.style, false);
+  assert.equal(checkSummary("5주 동안 590만 원이 더 나갔어요. 평소보다 훨씬 큰 돈이에요.", f).checks.style, true);
+  assert.deepEqual(findStyleBreaks("나갔어요. 들어왔어요"), []);
+  // 조언·권유·약속
+  for (const t of ["5주 동안 590만 원이 더 나갔어요. 함께 살펴봐 주세요.", "590만 원이 더 나갔어요. 확인해 주세요.",
+    "590만 원이 더 나갔어요. 이야기를 나눠 보세요.", "590만 원이 더 나갔어요. 도움이 필요해요.", "590만 원이 더 나갔어요. 꼭 연락해요."]) {
+    assert.equal(checkSummary(t, f).checks.no_advice, false, t);
+  }
+  assert.deepEqual(findAdvice("5주 동안 조금씩 계속 돈이 나가 전체 지출이 평소보다 590만 원 더 나갔어요."), []);
 });
 
 test("캐시 키: 항목 순서와 상관없이 같고, prompt_version이 다르면 다름", async () => {

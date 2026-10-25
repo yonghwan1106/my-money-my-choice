@@ -122,6 +122,6 @@ export interface PolicyMemory {
 export interface UnderstandRequest { prompt_version: "understand-v1"; text: string; pattern: PatternId; level: "watch" | "high"; }
 export interface UnderstandResponse { mode: "live" | "cache" | "precomputed" | "rule"; label: UnderstandLabel; evidence: string; validator: { passed: boolean; checks: Record<string, boolean> }; }
 export interface HelperNoteFacts { pattern_label: string; level_label: string; period: string; items: Record<string, string>; } // 값은 코드가 서식한 문자열("147만 원","3주","하루 만에")
-export interface HelperNoteRequest { prompt_version: "helpernote-v1"; pattern: PatternId; level: "watch" | "high"; facts: HelperNoteFacts; }
+export interface HelperNoteRequest { prompt_version: "helpernote-v2"; pattern: PatternId; level: "watch" | "high"; facts: HelperNoteFacts; }
 export interface HelperNoteResponse { mode: "live" | "cache" | "precomputed" | "template"; summary: string; validator: { passed: boolean; checks: Record<string, boolean> }; }
 export interface HealthResponse { ok: true; llm: "live" | "demo"; model: string; version: string; limits: { rpm_per_ip: number; daily_per_instance: number }; }

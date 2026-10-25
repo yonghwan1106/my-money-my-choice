@@ -59,6 +59,8 @@ export interface HelpernoteEval {
   banned_hits: number;
   intent_hits: number;
   template_fallbacks: number;
+  prompt_version?: string;
+  raw?: { attempts: number; attempts_json: number; units?: number; style?: number; advice?: number };
 }
 export interface Provenance {
   gen_commit: string;

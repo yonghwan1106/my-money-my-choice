@@ -101,3 +101,31 @@ export function findNames(text: string): string[] {
   const tokens = text.split(/[^가-힣]+/u).filter(Boolean);
   return tokens.map(nameOf).filter((x): x is string => x !== null);
 }
+
+/**
+ * helpernote-v2: 조언·권유·부탁·약속·걱정 표현(사실 요약만 허용). 알림 요약에 늘 금지.
+ * 「살펴봐 주세요」「확인해 주세요」「함께 이야기해 보세요」처럼 받는 사람에게 무엇을 하라고 하는 말을 거른다.
+ */
+export const ADVICE_WORDS = [
+  "주세요", "주십시오", "바랍니다", "바라요", "하세요", "보세요", "해 보", "해보", "드려요", "드립니다", "드릴", "드리겠",
+  "할게요", "겠어요", "겠습니다", "필요해요", "필요합니다", "필요가", "필요한", "좋겠", "좋아요", "좋을", "좋습니다",
+  "살펴", "확인해", "확인하", "확인을", "지켜봐", "지켜보", "주의", "조심", "도와", "도움", "함께", "권해", "권합", "추천",
+  "연락해", "연락하", "연락을", "이야기해", "이야기를", "얘기해", "얘기를", "상담", "물어보", "물어봐", "부탁", "약속", "걱정",
+  "반드시", "꼭 ", "꼭,",
+] as const;
+
+export function findAdvice(text: string): string[] {
+  return ADVICE_WORDS.filter((w) => text.includes(w));
+}
+
+/**
+ * helpernote-v2 문체: 모든 문장이 「~요」(해요체: 나갔어요·이었어요·돈이에요)로 끝나고 「~니다」가 없어야 한다.
+ * 위반한 문장 조각을 돌려준다(없으면 빈 배열).
+ */
+export function findStyleBreaks(text: string): string[] {
+  const out: string[] = [];
+  if (/니다/u.test(text)) out.push("니다");
+  const sentences = text.split(/(?<=[.!。])\s*/u).map((s) => s.trim()).filter(Boolean);
+  for (const s of sentences) if (!/요[.!。]?$/u.test(s)) out.push(s);
+  return out;
+}

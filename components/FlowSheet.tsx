@@ -45,7 +45,7 @@ export async function buildBubbles(
   if (needAlert) {
     const level = w.level === "high" ? "high" : "watch";
     const res = await getHelperNote(pre, {
-      prompt_version: "helpernote-v1",
+      prompt_version: "helpernote-v2",
       pattern: w.pattern ?? "slow_leak",
       level,
       facts: helperNoteFacts(w),

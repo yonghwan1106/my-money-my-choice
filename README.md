@@ -9,7 +9,7 @@
 발달장애인의 돈을 아는 사람이 조금씩 가져갈 때, AI가 통장의 달라진 흐름을 찾아 본인에게 먼저 묻고, 본인이 고른 사람에게만 알려요.
 
 - 시제품: https://my-money-my-choice.vercel.app (회원가입·로그인 없음, 시연 인물 4명은 [시연 고르기]에서 바로)
-- 영상: (제출 뒤 링크 추가)
+- 영상: (영상 링크는 제출 때 넣음)
 - 화면 12개: ① 첫 화면 `/` · ② 시연 고르기 `/demo` · ③ 내 설정 `/start` · ④ 파일·분석 `/check` · ⑤~⑨ 확인 카드·누구에게 알릴까요·알림 미리보기·상담 안내·다시 묻기(휴대폰 틀 안) · ⑩ 흔한 경고와 비교 `/compare` · ⑪ AI가 하는 일 `/how` · ⑫ AI 성적표 `/eval`
 - 약속: 거래를 막지 않아요 · 본인에게 먼저 물어요 · 본인이 고른 사람에게만 알려요 · 거래 기록은 이 기기 밖으로 나가지 않아요
 
@@ -38,11 +38,11 @@
 | | 거래 기록 읽기 · 숫자 계산 |
 
 - **모델**: `claude-haiku-5-5`(thinking 끔, temperature 없음). API 오류면 `claude-haiku-4-5`로 한 번, 검증 실패면 같은 모델로 한 번 다시 써요. 그래도 안 되면 낱말 규칙(K0, `lib/llm/k0.ts`)이나 고정 문장으로 바꿔요. 키가 없어도 같은 화면이 데모 모드로 돌아요.
-- **검증기**(`lib/llm/validate.ts`): 알아듣기는 범주 이름·근거가 입력 문장에 그대로 있는지, 요약은 길이·물음표·숫자 일치(요약 속 숫자가 모두 코드가 준 값에 있는지)·금지어·상대 의도 단정 낱말·사람 이름을 봐요.
+- **검증기**(`lib/llm/validate.ts`): 알아듣기는 범주 이름·근거가 입력 문장에 그대로 있는지, 요약은 길이·물음표·숫자 일치(요약 속 숫자가 모두 코드가 준 값에 있는지)·숫자 옆 단위 대조(「5주」를 「5일」로, 차이가 아닌 값에 「더」를 붙여 쓰면 실패)·문체(모든 문장 「~어요」)·조언·권유·약속 표현(「살펴봐 주세요」 등)·금지어·상대 의도 단정 낱말·사람 이름을 봐요. 프롬프트는 `helpernote-v2`(검증 사람 40주로만 고쳐 보고, 시험 60주는 한 번만 돌림).
 - **서버로 가는 것**: 이름을 지운 답 문장(200자 이하, `lib/privacy/redact.ts`가 브라우저에서 이름·전화·숫자를 지움)과 이름 없는 요약 숫자뿐이에요. 저장하지 않아요. 요청·응답 본문을 로그에 남기지 않아요.
 - **비용 상한**: IP당 분당 6회 · 인스턴스당 하루 300회(인스턴스 메모리라 인스턴스마다 따로 세요 — 진짜 상한은 Anthropic 콘솔 지출 한도). 시연 버튼은 사전계산 결과(`data/scenarios/*.json`)를 써서 실시간 호출이 없어요.
 - **평가**(가상 데이터 기준, 수치는 `/eval`과 JSON에서만): 알아듣기 `data/eval/understand_eval_v1.json`(개발팀이 쓴 가상 문장 120개 중 시험 80개, 한 번만 실행), 알림 요약 `data/eval/helpernote_eval_v1.json`(합성 시험 사람의 살펴보기·위험 주 60개), 언어모델만으로 위험 판단 비교 `data/eval/eval_b2_v1.json`(200개 주 부분집합), 지원의사결정 규칙 시험 `data/eval/policy_tests_v1.json`.
-- **다시 만들기**: `KEY_FILE=<키 파일 경로> npx --prefix <저장소> tsx <저장소>/scripts/eval_understand.ts --split dev` · `…/scripts/eval_helpernote.ts` · `…/scripts/precompute.ts` · `npx --prefix <저장소> tsx <저장소>/scripts/lib/b2_windows.ts` 뒤 `python <저장소>/pipeline/baseline_llm.py`. 키는 파일에서 프로세스 메모리로만 읽어요.
+- **다시 만들기**: `KEY_FILE=<키 파일 경로> npx --prefix <저장소> tsx <저장소>/scripts/eval_understand.ts --split dev` · `…/scripts/eval_helpernote.ts`(프롬프트를 고칠 때는 `--dev` = 검증 사람으로만 확인) · `…/scripts/precompute.ts` · `npx --prefix <저장소> tsx <저장소>/scripts/lib/b2_windows.ts` 뒤 `python <저장소>/pipeline/baseline_llm.py`. 키는 파일에서 프로세스 메모리로만 읽어요.
 
 ## 4. 성적(가상 데이터 기준)
 
@@ -114,3 +114,5 @@ python -E <저장소>/tests/e2e/e2e.py --base http://localhost:3000 [--keyless] 
 ## 8. 후보작 구현 안내
 
 2026 AI 라이프 아이디어 챌린지 후보작 11번(제안자 아이디어)을 구현한 새 코드입니다. 2025 SafeLife와 코드를 나누지 않습니다. 무엇이 다른지는 [`docs/safelife_diff.md`](docs/safelife_diff.md)에 적었어요.
+
+지식재산권: AI 라이프 아이디어 챌린지 수상 대상 후보작을 기반으로 하는 경우, 지식재산권은 아이디어 제안자와 솔루션 개발자 간 동등한 비율(50:50)로 공동 소유함을 원칙으로 함 (2026 공고문 7쪽)

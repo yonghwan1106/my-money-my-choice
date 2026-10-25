@@ -1,24 +1,27 @@
 {
-  "prompt_version": "helpernote-v1",
+  "prompt_version": "helpernote-v2",
   "model": "claude-haiku-5-5",
   "n": 60,
-  "pass_first": 0.9333,
-  "pass_after_retry": 0.9833,
+  "pass_first": 0.9833,
+  "pass_after_retry": 1,
   "numbers_match_rate": 1,
   "banned_hits": 0,
   "intent_hits": 0,
-  "template_fallbacks": 1,
-  "cost_usd": 0.004906,
+  "template_fallbacks": 0,
+  "cost_usd": 0.006968,
   "raw": {
-    "attempts": 64,
-    "attempts_json": 64,
-    "banned": 1,
+    "attempts": 61,
+    "attempts_json": 61,
+    "banned": 0,
     "intent": 0,
     "name": 1,
-    "length": 3,
-    "question": 0
+    "length": 0,
+    "question": 0,
+    "units": 0,
+    "style": 0,
+    "advice": 0
   },
-  "calls": 64,
+  "calls": 61,
   "by_pattern": {
     "after_income": 8,
     "big_spend": 8,
@@ -32,6 +35,6 @@
   "analyze_model": "gbm-v1",
   "model_frozen": "cdc12e9",
   "provisional": false,
-  "generated_at": "2026-10-25T11:20:34.714Z",
-  "note": "banned_hits·intent_hits = 본인 화면에 나간 요약 기준(검증기가 걸러 늘 0이어야 함). raw = 검증기가 거르기 전 시도별 위반 수. numbers_match_rate = JSON이 맞은 시도 중 숫자 일치 비율."
+  "generated_at": "2026-10-25T11:51:04.209Z",
+  "note": "banned_hits·intent_hits = 본인 화면에 나간 요약 기준(검증기가 걸러 늘 0이어야 함). raw = 검증기가 거르기 전 시도별 위반 수(units = 숫자 옆 단위가 facts와 다름, style = 「~어요」 아닌 문장, advice = 조언·권유·약속 표현 — helpernote-v2에서 더함). numbers_match_rate = JSON이 맞은 시도 중 숫자 일치 비율."
 }
