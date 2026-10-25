@@ -58,7 +58,7 @@ export function analyzeWeek(st: SignalState, week: number, txsOfWeek: Tx[], scor
   let prob: number | null = null;
   let level: Level;
   let why: WeekResult["why"] = [];
-  let topFeature: string | null = null;
+  let topFeatures: string[] = [];
   if (insufficient) {
     level = "insufficient";
   } else if (scorer) {
@@ -67,7 +67,7 @@ export function analyzeWeek(st: SignalState, week: number, txsOfWeek: Tx[], scor
     level = levelFromProb(prob, scorer.t1, scorer.t2);
     if (s.contributions) {
       const idx = s.contributions.map((c, i) => [c, i] as const).sort((a, b) => b[0] - a[0]);
-      topFeature = FEATURE_NAMES[idx[0][1]];
+      topFeatures = idx.filter(([c]) => c > 0).map(([, i]) => FEATURE_NAMES[i]);
       why = idx.filter(([c]) => c > 0).slice(0, 3).map(([c, i]) => ({
         feature: FEATURE_NAMES[i], label: FEATURE_LABELS[FEATURE_NAMES[i]], contribution: c,
       }));
@@ -75,7 +75,7 @@ export function analyzeWeek(st: SignalState, week: number, txsOfWeek: Tx[], scor
   } else {
     level = levelFromCount(b3);
   }
-  const { pattern, pattern2, facts } = patternsOf(signals, level, topFeature);
+  const { pattern, pattern2, facts } = patternsOf(signals, level, topFeatures);
   const cpKeys = [...new Set(signals.filter((s) => s.fired).flatMap((s) => s.cpKeys))].sort();
   return {
     week, weekStartDay: weekStart, baselineWeeks: baseline.length, signals, anyFired: rec.fired, features, prob,

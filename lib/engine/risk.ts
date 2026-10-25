@@ -25,11 +25,27 @@ export function levelFromCount(b3: number): Level {
   return b3 >= 2 ? "high" : b3 === 1 ? "watch" : "normal";
 }
 
+/** 그 신호의 facts로 카드 문장을 사실대로 채울 수 있나 */
+function hasEvidence(id: SignalId, f: Facts): boolean {
+  const pos = (x: number | undefined) => typeof x === "number" && x > 0;
+  switch (id) {
+    case "S1": return pos(f.big_krw);
+    case "S2": case "S3": return pos(f.cum_count) && pos(f.cum_total_krw);
+    case "S4": return pos(f.income_krw) && pos(f.out_after_income_krw);
+    case "S5": return pos(f.loan_krw) && pos(f.out_after_income_krw);
+    case "S6": return pos(f.new_bills);
+    case "S7": return pos(f.micro_count);
+    case "S8": return pos(f.leak_weeks) && pos(f.leak_excess_krw);
+    case "S9": return f.balance_low === true;
+    case "S10": return f.salary_mode === "missing" || f.salary_mode === "returned";
+  }
+}
+
 interface Cand { pattern: PatternId; ids: SignalId[] }
 
 /** 켜진 신호를 정해진 순서로 보고 처음 두 수법. 켜진 신호가 없으면 Saabas 1위 특징으로 */
 export function patternsOf(
-  signals: SignalResult[], level: Level, topFeature: string | null,
+  signals: SignalResult[], level: Level, topFeatures: string[],
 ): { pattern: PatternId | null; pattern2: PatternId | null; facts: Facts } {
   if (level !== "watch" && level !== "high") return { pattern: null, pattern2: null, facts: {} };
   const by = (id: SignalId) => signals.find((s) => s.id === id)!;
@@ -51,10 +67,16 @@ export function patternsOf(
   ];
   const picked = order.filter((c): c is Cand => c !== null);
   if (picked.length === 0) {
-    const m = topFeature ? /^s(\d+)$/.exec(topFeature) : null;
-    if (m) {
-      const id = ("S" + m[1]) as SignalId;
-      return { pattern: SIGNAL_PATTERN[id], pattern2: null, facts: { ...by(id).facts } };
+    // 켜진 신호가 없는데 모델이 watch·high: Saabas 기여도가 큰 신호 특징 순서로 보되,
+    // 그 신호의 facts에 실제 숫자가 있는 것만 쓴다(빈 facts로 「월급이 안 들어왔어요」 같은 사실 아닌 문장이 나오지 않게).
+    const order2: SignalId[] = [];
+    for (const f of topFeatures) {
+      const m = /^s(\d+)$/.exec(f);
+      if (m) order2.push(("S" + m[1]) as SignalId);
+    }
+    for (const id of ["S1", "S8", "S4", "S2", "S3", "S7", "S5", "S6", "S10", "S9"] as SignalId[]) if (!order2.includes(id)) order2.push(id);
+    for (const id of order2) {
+      if (hasEvidence(id, by(id).facts)) return { pattern: SIGNAL_PATTERN[id], pattern2: null, facts: { ...by(id).facts } };
     }
     return { pattern: "slow_leak", pattern2: null, facts: { ...by("S8").facts } };
   }

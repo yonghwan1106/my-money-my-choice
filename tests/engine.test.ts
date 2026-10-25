@@ -266,13 +266,15 @@ test("수법 이름 순서: 대출 > 새 휴대폰 > 월급 > 강한 같은 사�
     (["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8", "S9", "S10"] as SignalId[]).map((id) => ({
       id, value: 1, fired: fired.includes(id), facts: (facts[id] ?? {}) as object, cpKeys: [],
     }));
-  assert.deepEqual([patternsOf(S(["S4", "S5"]), "high", null).pattern, patternsOf(S(["S4", "S5"]), "high", null).pattern2], ["loan_passthrough", "after_income"]);
-  const strong = patternsOf(S(["S2", "S4"], { S2: { cum_count: 3 } }), "high", null);
+  assert.deepEqual([patternsOf(S(["S4", "S5"]), "high", []).pattern, patternsOf(S(["S4", "S5"]), "high", []).pattern2], ["loan_passthrough", "after_income"]);
+  const strong = patternsOf(S(["S2", "S4"], { S2: { cum_count: 3 } }), "high", []);
   assert.deepEqual([strong.pattern, strong.pattern2], ["same_person", "after_income"]);
-  const weak = patternsOf(S(["S2", "S4"], { S2: { cum_count: 1 } }), "high", null);
+  const weak = patternsOf(S(["S2", "S4"], { S2: { cum_count: 1 } }), "high", []);
   assert.deepEqual([weak.pattern, weak.pattern2], ["after_income", "same_person"]);
-  assert.equal(patternsOf(S(["S1"]), "watch", null).pattern, "big_spend");
-  assert.equal(patternsOf(S([]), "watch", "s7").pattern, "micro_repeat");
-  assert.equal(patternsOf(S([]), "watch", "cash_share").pattern, "slow_leak");
-  assert.equal(patternsOf(S(["S1"]), "normal", null).pattern, null);
+  assert.equal(patternsOf(S(["S1"]), "watch", []).pattern, "big_spend");
+  // 켜진 신호 없음: Saabas 순서로 보되 facts에 숫자가 있는 신호만
+  assert.equal(patternsOf(S([], { S7: { micro_count: 4 } }), "watch", ["s7"]).pattern, "micro_repeat");
+  assert.equal(patternsOf(S([], { S1: { big_krw: 90000 } }), "watch", ["s10", "s1"]).pattern, "big_spend");
+  assert.equal(patternsOf(S([]), "watch", ["cash_share"]).pattern, "slow_leak");
+  assert.equal(patternsOf(S(["S1"]), "normal", []).pattern, null);
 });
