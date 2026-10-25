@@ -43,7 +43,7 @@ test("형식 1 (UTF-8): 머리행·열 역할·행 100%", () => {
   assert.equal(report.unknownCategoryShare, 1 / 20);
   assert.equal(report.firstDay, dayNo(2026, 7, 1));
   assert.equal(report.lastDay, dayNo(2026, 8, 7));
-  assert.equal(txs[0].id, "r2");
+  assert.equal(txs[0].id, "r1"); // 머리행 다음 데이터 행 번호
   assert.equal(txs[0].amount, -300000);
   assert.equal(txs[3].amount, 100000);
   assert.equal(txs[1].minute, 12 * 60 + 31);
@@ -70,6 +70,7 @@ test("BOM 제거", () => {
 test("안내문 2~3줄 뒤 머리행", () => {
   const { txs, report } = load("f2_notice.csv");
   assert.equal(report.headerRow, 3);
+  assert.equal(txs[0].id, "r1");
   assert.equal(txs.length, 20);
   assert.deepEqual(txs.map(pick), load("f1_utf8.csv").txs.map(pick));
 });
@@ -195,6 +196,9 @@ test("범주·사람 이름 판별", () => {
   assert.equal(categorize("예시카드론상환", "", "", -100000), "loan_repay");
   assert.equal(categorize("급여 늘봄보호작업장", "", "", 900000), "income_salary");
   assert.equal(categorize("장애수당", "", "", 500000), "income_benefit");
+  assert.equal(categorize("생계급여", "", "", 500000), "income_benefit");
+  assert.equal(categorize("주거급여", "", "", 200000), "income_benefit");
+  assert.equal(categorize("급여", "늘봄보호작업장", "", 900000), "income_salary");
   assert.equal(categorize("게임충전", "", "", -5000), "micro_payment");
   assert.equal(categorize("푸른가전", "", "", -1290000), "card_daily");
   assert.equal(categorize("김도현", "", "", -400000), "transfer_out");

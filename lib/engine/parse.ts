@@ -273,7 +273,7 @@ export function toTxs(
     const category = categorize(m1, m2, branchRaw, amount);
     raw.push({
       tx: {
-        id: `r${i + 1}`,
+        id: `r${i - rep.headerRow}`, // 머리행 다음 데이터 행 번호(1부터) = truth.json exploit_rows와 같은 번호
         day: dt.day,
         minute,
         amount,

@@ -35,7 +35,8 @@ export function roleOfHeader(h: string): ColumnRole | null {
 export const CATEGORY_RULES: { category: Category | "transfer"; dir: "in" | "out" | "any"; re: RegExp }[] = [
   { category: "loan_in", dir: "in", re: /대출|카드론|캐피탈|저축은행|마이너스|론입금/ },
   { category: "loan_repay", dir: "out", re: /대출상환|원리금|이자|카드론상환/ },
-  { category: "income_salary", dir: "in", re: /급여|월급|임금|상여|보호작업장/ },
+  // 「생계급여」「주거급여」는 규칙 4(수당)가 뜻한 것이라 규칙 3에서 뺀다(명세 순서상 「급여」에 먼저 걸리는 것을 막음)
+  { category: "income_salary", dir: "in", re: /(?<!생계|주거)급여|월급|임금|상여|보호작업장/ },
   { category: "income_benefit", dir: "in", re: /연금|수당|생계급여|주거급여|기초|바우처/ },
   { category: "telecom", dir: "out", re: /통신|모바일요금|텔레콤|휴대폰|핸드폰|단말기|할부금/ },
   { category: "bill_recurring", dir: "out", re: /자동이체|월세|관리비|공과금|전기|가스|수도|보험|지로|아파트/ },
