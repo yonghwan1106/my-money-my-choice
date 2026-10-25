@@ -1,0 +1,47 @@
+{
+  "subset_n": 200,
+  "subset_pos": 100,
+  "rows": [
+    {
+      "model": "claude-haiku-5-5",
+      "thinking": "disabled",
+      "pr_auc": 0.7839,
+      "recall_at_rule": 0.41,
+      "calls": 200,
+      "failures": 0,
+      "cost_usd": 0.0157
+    },
+    {
+      "model": "claude-sonnet-5",
+      "thinking": "default",
+      "max_tokens": 2000,
+      "pr_auc": 0.7581,
+      "recall_at_rule": 0.3,
+      "calls": 200,
+      "failures": 0,
+      "cost_usd": 0.4257
+    },
+    {
+      "model": "GBM(같은 200개)",
+      "pr_auc": 0.8691,
+      "recall_at_rule": 0.77
+    }
+  ],
+  "cost_usd": 0.4414,
+  "note": "언어모델 단독은 200개 주 부분집합 결과",
+  "rule": {
+    "llm": "p >= 0.5",
+    "gbm": "prob >= t1 (thresholds.json)",
+    "t1": 0.08949416342412451
+  },
+  "subset": {
+    "seed": 20261026,
+    "neg_tricky": 30,
+    "pools": {
+      "pos": 235,
+      "neg_tricky": 484,
+      "neg_other": 1921
+    }
+  },
+  "generated_at": "2026-10-25T19:41:27+0900"
+}
