@@ -156,9 +156,18 @@ export function HardCases({ ev, blind }: { ev: EvalV1; blind: BlindEval | null }
         </table>
       </div>
       <p className="small mt-2">블라인드 수법은 신호를 짜지 않은 작업자가 모델 동결 뒤 만들었어요. 같은 팀 안의 분리라 완전한 외부 시험은 아니에요.</p>
-      {ev.interpretations.hard_cases ? <p className="mt-2">{ev.interpretations.hard_cases}</p> : null}
+      {hardCasesText(ev, blind) ? <p className="mt-2" data-testid="hard-cases-text">{hardCasesText(ev, blind)}</p> : null}
     </section>
   );
+}
+
+/** 설계서 §11-3 미리 적은 문장(pipeline/evaluate.py INTERP_HARD와 같은 글자). evaluate.py는 블라인드 전에 돌아
+ *  이미 진행 중 주 재현율만 봤다 → 같은 기준(주 재현율 < 0.5)을 블라인드 Q1·Q2에도 대어 문장을 고른다. JSON은 고치지 않는다. */
+const INTERP_HARD = "이미 오래된 착취와 처음 보는 수법은 잘 못 찾습니다 — 지원센터 첫 상담과 함께 써야 하는 이유입니다.";
+function hardCasesText(ev: EvalV1, blind: BlindEval | null): string {
+  if (ev.interpretations.hard_cases) return ev.interpretations.hard_cases;
+  if (blind && (blind.recall.Q1.windows < 0.5 || blind.recall.Q2.windows < 0.5)) return INTERP_HARD;
+  return "";
 }
 
 const ULABEL: Record<string, string> = {
