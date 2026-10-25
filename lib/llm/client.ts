@@ -23,7 +23,7 @@ export type CreateFn = (body: Record<string, unknown>) => Promise<{ content: Blo
 export interface Deps {
   /** 키(없으면 process.env.ANTHROPIC_API_KEY). 값은 메모리에만. */
   apiKey?: string | null;
-  /** 시험용 가짜 클라이언트. */
+  /** 시험용 대역 클라이언트. */
   create?: CreateFn;
   /** 캐시·상한을 건너뜀(오프라인 평가·사전계산). */
   offline?: boolean;
