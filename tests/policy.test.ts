@@ -369,20 +369,21 @@ const FILES: Record<ScenarioId, string> = { A: "A_minsu", B: "B_seoyeon", C: "C_
 
 test("P-29 시나리오 A·B·C·D 시연 답 경로가 §8-2 단계 순서를 낸다", () => {
   const root = path.resolve(__dirname, "..");
+  const DEMO = { A: 20, B: 16, C: 19, D: 21 } as const;
   for (const id of ["A", "B", "C", "D"] as ScenarioId[]) {
     const fx = FIXTURE[id];
     const run = runDemo(id, fx.weeks, fx.s, responder(id));
     assert.deepEqual(stepTrace(run.steps), EXPECTED[id], `fixture ${id}`);
+    // 사전계산 결과(data/scenarios/<id>.json, 진짜 analyze·모델)로도 같은 순서인지
     const file = path.join(root, "data", "scenarios", `${FILES[id]}.json`);
-    if (fs.existsSync(file)) {
-      const sc = JSON.parse(fs.readFileSync(file, "utf-8"));
-      const real = runDemo(id, sc.analysis.weeks, sc.settings, responder(id));
-      // 실제 단계가 기대와 같을 때만 §8-2 순서를 요구하고, 다르면 저장된 script와 같은지(규칙표대로인지)를 본다.
-      const sameLevels = real.week === ({ A: 20, B: 16, C: 19, D: 21 } as const)[id];
-      if (sameLevels && sc.expected_flow_match !== false) {
-        assert.deepEqual(stepTrace(real.steps), sc.script_trace ?? stepTrace(real.steps), `real ${id}`);
-      }
-    }
+    if (!fs.existsSync(file)) continue;
+    const sc = JSON.parse(fs.readFileSync(file, "utf-8"));
+    const understood = id === "A" && sc.script?.[0]?.input?.type === "understood" ? sc.script[0].input : undefined;
+    const real = runDemo(id, sc.analysis.weeks, sc.settings, responder(id, understood));
+    const trace = stepTrace(real.steps);
+    assert.deepEqual(trace, sc.script_trace, `real ${id}: 저장된 script와 다름`);
+    // 실제 단계가 각본 기대 주와 같으면 §8-2 순서 그대로여야 한다(다르면 그 주의 실제 level로 규칙표를 따른 것 — check_scenarios가 보고)
+    if (real.week === DEMO[id]) assert.deepEqual(trace, EXPECTED[id], `real ${id}`);
   }
   // 시나리오 D는 28일 숨김을 남긴다
   const d = FIXTURE.D;
