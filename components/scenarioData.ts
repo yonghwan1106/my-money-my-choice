@@ -17,3 +17,9 @@ export const SCENARIO_PRE: Record<ScenarioId, PrecomputedBlock | null> = {
   C: null,
   D: null,
 };
+
+/** ⑩ 비교 값 — data/scenarios/A_minsu.json·D_haneul.json의 compare (C9 전에는 null → 화면이 같은 정의로 계산) */
+export const SCENARIO_COMPARE: {
+  A: import("./CompareBoard").CompareA | null;
+  D: import("./CompareBoard").CompareD | null;
+} = { A: null, D: null };
