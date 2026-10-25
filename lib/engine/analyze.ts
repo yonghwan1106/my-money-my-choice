@@ -8,16 +8,12 @@ import { FEATURE_LABELS, FEATURE_NAMES, computeFeatures, weekRecordOf } from "./
 import { b0Of, b3Of } from "./baselines";
 import { isInsufficient, levelFromCount, levelFromProb, patternsOf } from "./risk";
 import { summarizeCounterparties } from "./counterparty";
+import type { Scorer } from "./model";
+import { gbmScorer, lrScorer } from "./model";
+
+export type { Scorer };
 
 export type ModelChoice = "gbm" | "lr" | "none";
-
-/** 모델 평가기 자리: 특징 → 보정 확률 + Saabas 기여도(특징별) + 임계값 */
-export interface Scorer {
-  version: "gbm-v1" | "lr-v1";
-  t1: number;
-  t2: number;
-  score: (features: number[]) => { prob: number; contributions: number[] | null };
-}
 
 export function createState(w1: number, firstDay: number): SignalState {
   return {
@@ -88,17 +84,9 @@ export function analyzeWeek(st: SignalState, week: number, txsOfWeek: Tx[], scor
   };
 }
 
-let defaultScorer: Scorer | null = null;
-let lrScorer: Scorer | null = null;
-/** model.ts가 모델 JSON을 읽은 뒤 등록한다 */
-export function registerScorers(gbm: Scorer | null, lr: Scorer | null): void {
-  defaultScorer = gbm;
-  lrScorer = lr;
-}
-
 export function analyze(txs: Tx[], report: ParseReport, opts?: { model?: ModelChoice }): AnalyzeResult {
-  const choice: ModelChoice = opts?.model ?? (defaultScorer ? "gbm" : "none");
-  const scorer = choice === "gbm" ? defaultScorer : choice === "lr" ? lrScorer : null;
+  const choice: ModelChoice = opts?.model ?? "gbm";
+  const scorer = choice === "gbm" ? gbmScorer : choice === "lr" ? lrScorer : null;
   const sorted = [...txs].sort((a, b) => a.day - b.day || (a.minute ?? -1) - (b.minute ?? -1));
   const { w1, nWeeks, weekOf } = weekIndexer(sorted);
   const kept = sorted.filter((t) => t.day >= w1);
