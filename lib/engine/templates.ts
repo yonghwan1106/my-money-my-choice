@@ -359,6 +359,44 @@ export function helperNoteTemplate(w: WeekResult): string {
   return textFor(w, w.pattern).summary;
 }
 
+/**
+ * 서버 쪽 고정 문안(§6-9 helper-note 폴백) — 서버는 WeekResult가 없고 서식된 HelperNoteFacts만 받으므로
+ * 같은 문장을 items 값으로 다시 짓는다. 시험이 helperNoteTemplate(w)와 같은지 확인한다.
+ */
+export function helperNoteTemplateFromFacts(p: PatternId, f: HelperNoteFacts): string {
+  const it = f.items ?? {};
+  const has = (...ks: string[]) => ks.every((k) => typeof it[k] === "string" && it[k].length > 0);
+  switch (p) {
+    case "same_person":
+      if (has("횟수", "합계")) return `${f.pattern_label}: ${f.period} 동안 ${it["횟수"]}, 모두 ${it["합계"]}이 나갔어요.`;
+      break;
+    case "after_income":
+      if (has("수입", "걸린 시간", "수입 뒤 나간 돈")) return `${it["수입"]}이 들어오고 ${it["걸린 시간"]} ${it["수입 뒤 나간 돈"]}이 나갔어요.`;
+      break;
+    case "loan_passthrough":
+      if (has("대출", "걸린 시간", "대출 뒤 나간 돈")) return `대출금 ${it["대출"]}이 들어오고 ${it["걸린 시간"]} ${it["대출 뒤 나간 돈"]}이 나갔어요.`;
+      break;
+    case "new_phone_bills":
+      if (has("새 요금")) return `한 달 안에 새 휴대폰 요금이 ${it["새 요금"]} 생겼어요.`;
+      break;
+    case "salary_cut":
+      return "이번 달 월급이 평소와 달라졌어요.";
+    case "micro_repeat":
+      if (has("횟수", "합계")) return `한 주에 작은 결제가 ${it["횟수"]}, 모두 ${it["합계"]}이었어요.`;
+      break;
+    case "slow_leak":
+      if (has("이어진 기간", "더 나간 돈")) return `${it["이어진 기간"]} 동안 평소보다 ${it["더 나간 돈"]}이 더 나갔어요.`;
+      break;
+    case "big_spend":
+      if (has("금액")) return `한 번에 ${it["금액"]}이 나갔어요. 평소보다 훨씬 큰 돈이에요.`;
+      break;
+  }
+  return SAFE_SUMMARY;
+}
+
+/** 어떤 값으로도 검사를 통과하는 마지막 폴백 문장. */
+export const SAFE_SUMMARY = "평소와 다른 돈 흐름이 있었어요.";
+
 export function alertMessage(
   summary: string, answer: Answer | null, name: string, opts: { predelegated?: boolean } = {},
 ): { head: string; body: string[] } {

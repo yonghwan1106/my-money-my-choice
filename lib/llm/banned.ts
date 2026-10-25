@@ -55,6 +55,7 @@ export const GIVEN_NAMES = (
 ).split(" ");
 
 const JOSA = /(님에게|님께|님이|님은|님을|님|씨에게|씨가|씨는|씨|에게서|에게|한테|께서|께|에서|으로|로|이가|이는|이를|이와|가|는|은|을|를|와|과|의|도|에)$/u;
+const JOSA_ONLY = new RegExp("^(?:" + JOSA.source.slice(1, -2) + ")+$", "u");
 const VERB_END = /[요고다며니갔했었았던됨음함]$/u;
 
 /**
@@ -62,19 +63,28 @@ const VERB_END = /[요고다며니갔했었았던됨음함]$/u;
  * 그리고 (3자 · 「님/씨」가 붙음 · §4-6 이름이 들어 있음) 중 하나. 2자 낱말(「오늘」「인출」)을 이름으로 잘못 보지 않기 위한 조건이다.
  */
 export function looksLikeName(token: string): boolean {
+  return nameOf(token) !== null;
+}
+
+/** 이름처럼 보이면 조사를 뗀 이름, 아니면 null. */
+export function nameOf(token: string): string | null {
+  // 흔한 낱말 + 조사(「선생님에게」「이번에는」)는 이름이 아님
+  for (const w of COMMON_WORDS) {
+    if (w.length >= 2 && token.startsWith(w) && (token.length === w.length || JOSA_ONLY.test(token.slice(w.length)))) return null;
+  }
   const honor = /(님|씨)/u.test(token.slice(2));
   const t = token.replace(JOSA, "");
-  if (!/^[가-힣]{2,4}$/u.test(t)) return false;
-  if (COMMON_WORDS.has(t) || COMMON_WORDS.has(token)) return false;
-  if (GIVEN_NAMES.some((g) => t.includes(g)) && (SURNAMES_1.includes(t[0]) || t.length === 2)) return true;
-  if (VERB_END.test(t)) return false;
+  if (!/^[가-힣]{2,4}$/u.test(t)) return null;
+  if (COMMON_WORDS.has(t)) return null;
+  if (GIVEN_NAMES.some((g) => t.includes(g)) && (SURNAMES_1.includes(t[0]) || t.length === 2)) return t;
+  if (VERB_END.test(t)) return null;
   const surname = (t.length >= 3 && SURNAMES_2.includes(t.slice(0, 2))) || SURNAMES_1.includes(t[0]);
-  if (!surname) return false;
-  for (const w of COMMON_WORDS) if (w.length >= 2 && t.startsWith(w)) return false;
-  return t.length === 3 || honor;
+  if (!surname) return null;
+  for (const w of COMMON_WORDS) if (w.length >= 2 && t.startsWith(w)) return null;
+  return t.length === 3 || honor ? t : null;
 }
 
 export function findNames(text: string): string[] {
   const tokens = text.split(/[^가-힣]+/u).filter(Boolean);
-  return tokens.filter(looksLikeName);
+  return tokens.map(nameOf).filter((x): x is string => x !== null);
 }
