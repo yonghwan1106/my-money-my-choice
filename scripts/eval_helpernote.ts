@@ -15,7 +15,6 @@ import { HELPERNOTE_VERSION } from "../lib/llm/prompts";
 import { checkSummary } from "../lib/llm/validate";
 import { findBanned, findIntent } from "../lib/llm/banned";
 import { readKey } from "./lib/key";
-import { tryLoadModel } from "./lib/model_load";
 
 const PRICE: Record<string, [number, number]> = {
   "claude-haiku-5-5": [0.10, 0.50], "claude-haiku-4-5": [1, 5], "claude-sonnet-5": [2, 10],
@@ -35,7 +34,6 @@ async function main() {
   const synth = path.join(ROOT, "pipeline", "work", "synth");
   const truth = JSON.parse(fs.readFileSync(path.join(synth, "truth.json"), "utf-8")) as Record<string, { split: string }>;
   const ids = Object.keys(truth).filter((id) => truth[id].split === "test").sort();
-  await tryLoadModel();
   const cands: { pid: string; w: WeekResult }[] = [];
   let modelVersion = "none";
   for (const pid of ids) {
