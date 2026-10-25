@@ -54,9 +54,10 @@ export function Timeline({
   const man = (krw: number) => krw / 10000;
   const maxV = niceMax(Math.max(1, ...weeks.map((w) => man(Math.max(w.outflow_krw, w.band?.hi ?? 0)))));
   const x = (week: number) => PAD.l + ((week - 0.5) / n) * (W - PAD.l - PAD.r);
-  const y = (v: number) => PAD.t + (1 - Math.min(v, maxV) / maxV) * (H - PAD.t - PAD.b);
+  // 제곱근 눈금: 큰 돈 한 주가 있어도 평소 범위 띠가 보이게(눈금 숫자는 실제 값)
+  const y = (v: number) => PAD.t + (1 - Math.sqrt(Math.min(Math.max(v, 0), maxV) / maxV)) * (H - PAD.t - PAD.b);
   const colW = (W - PAD.l - PAD.r) / n;
-  const ticks = [0, maxV / 2, maxV];
+  const ticks = [...new Set([0, niceMax(maxV / 25), niceMax(maxV / 4), maxV])].filter((t) => t <= maxV);
   // 달 눈금: 그 주 월요일의 달이 앞 주와 달라지는 주
   const months: { week: number; label: string }[] = [];
   let prevM = -1;
@@ -123,7 +124,7 @@ export function Timeline({
         ))}
         <line x1={PAD.l} x2={W - PAD.r} y1={H - PAD.b} y2={H - PAD.b} stroke="#9aa1ab" />
       </svg>
-      <figcaption className="mt-1 text-[1rem] text-muted">세로: 밖으로 나간 돈(만 원) · 가로: 주</figcaption>
+      <figcaption className="mt-1 text-[1rem] text-muted">세로: 밖으로 나간 돈(만 원, 제곱근 눈금) · 가로: 주</figcaption>
       <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[1rem]" aria-label="범례">
         <li className="flex items-center gap-1.5">
           <span className="inline-block h-3 w-5 rounded-sm" style={{ background: "var(--band)" }} />

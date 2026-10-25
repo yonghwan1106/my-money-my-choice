@@ -1,12 +1,12 @@
 // 평가 산출 JSON (구현명세 §12) — 화면 숫자는 여기서만 읽는다(손으로 적은 숫자 없음).
-// 임시: eval_blind_v1·eval_b2_v1·policy_tests_v1은 아직 없어 null → 화면은 「—」. 파일이 생기면 import를 풀고 null을 지운다.
+// 임시: eval_blind_v1·eval_b2_v1은 아직 없어 null → 화면은 「—」. 파일이 생기면 import를 풀고 null을 지운다.
 import evalV1 from "@/data/eval/eval_v1.json";
 import understandV1 from "@/data/eval/understand_eval_v1.json";
 import helpernoteV1 from "@/data/eval/helpernote_eval_v1.json";
 import provenanceJ from "@/data/eval/provenance.json";
 // import blindV1 from "@/data/eval/eval_blind_v1.json";
 // import b2V1 from "@/data/eval/eval_b2_v1.json";
-// import policyV1 from "@/data/eval/policy_tests_v1.json";
+import policyV1 from "@/data/eval/policy_tests_v1.json";
 
 export type Ci = [number, number] | null;
 export interface EvalRow {
@@ -92,4 +92,4 @@ export const HELPERNOTE_V1: HelpernoteEval | null = helpernoteV1 as unknown as H
 export const PROVENANCE: Provenance | null = provenanceJ as unknown as Provenance;
 export const BLIND_V1: BlindEval | null = null;
 export const B2_V1: B2Eval | null = null;
-export const POLICY_V1: PolicyTests | null = null;
+export const POLICY_V1: PolicyTests | null = policyV1 as unknown as PolicyTests;
