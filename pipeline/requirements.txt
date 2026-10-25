@@ -1,0 +1,7 @@
+scikit-learn==1.7.2
+numpy==2.2.6
+pandas==2.2.3
+scipy==1.16.3
+PyYAML==6.0.3
+pytest==9.0.2
+playwright==1.55.0

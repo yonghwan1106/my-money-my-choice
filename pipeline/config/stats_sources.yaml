@@ -1,0 +1,21 @@
+source: "보건복지부·중앙장애인권익옹호기관, 2024 장애인학대 현황보고서 (PDF 151쪽, [표 5-15]·행위자 본문)"
+url: "https://mohw.go.kr/board.es?act=view&bid=0027&list_no=1487515&mid=a10503000000"
+duration_weeks:        # 경제적 착취(발달장애인) 지속기간, 구간 안 균등
+  - {lo: 1,   hi: 12,  p: 0.230, label: "3개월 미만 65건"}
+  - {lo: 13,  hi: 25,  p: 0.128, label: "3~6개월 36건"}
+  - {lo: 26,  hi: 51,  p: 0.145, label: "6~12개월 41건"}
+  - {lo: 52,  hi: 155, p: 0.238, label: "1~3년 67건"}
+  - {lo: 156, hi: 259, p: 0.067, label: "3~5년 19건"}
+  - {lo: 260, hi: 519, p: 0.124, label: "5~10년 35건"}
+  - {lo: 520, hi: 780, p: 0.067, label: "10년 이상 19건 (상한 15년은 가정값)"}
+perpetrator:           # 발달장애인 경제적 착취 행위자 (네 범주는 보고서 수치, 나머지는 직접 묶음)
+  acquaintance: 0.358  # 알고 지내는 사람(지인) 101건
+  facility_staff: 0.149 # 사회복지시설 종사자 42건
+  stranger: 0.110      # 모르는 사람 31건
+  sibling: 0.074       # 형제자매 및 그의 배우자 21건
+  other_family_or_other: 0.309  # 나머지(직접 묶음)
+assumptions:           # 근거 통계 없음 → 화면·보고서에 「가정값」 표기
+  pattern_share: "P1~P6 균등"
+  cohort_share: "새로 시작 120 : 이미 진행 중 120"
+  intensity_share: "높음·중간·낮음 균등"
+  amounts: "급여·수당·생활비 금액 전부 가정값"

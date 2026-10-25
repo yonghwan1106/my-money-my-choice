@@ -1,0 +1,68 @@
+{
+  "seed": 20261026,
+  "period": [
+    "2026-04-06",
+    "2026-10-04"
+  ],
+  "weeks": 26,
+  "persons": 600,
+  "cohorts": {
+    "none": 360,
+    "new": 120,
+    "ongoing": 120
+  },
+  "new_start_week_1_3": 8,
+  "patterns": {
+    "P1": 40,
+    "P2": 40,
+    "P3": 40,
+    "P4": 40,
+    "P5": 40,
+    "P6": 40
+  },
+  "tricky": {
+    "appliance": 18,
+    "deposit": 18,
+    "trip": 18,
+    "gift": 18,
+    "family_event": 18,
+    "new_phone": 18
+  },
+  "intensity": {
+    "high": 80,
+    "mid": 80,
+    "low": 80
+  },
+  "format_share": {
+    "1": 0.5,
+    "2": 0.5
+  },
+  "cp949_share": 0.2,
+  "preamble_share": 0.1,
+  "perpetrator_share": {
+    "acquaintance": 0.3583,
+    "facility_staff": 0.15,
+    "stranger": 0.1083,
+    "sibling": 0.075,
+    "other_family_or_other": 0.3083
+  },
+  "perpetrator_share_target": {
+    "acquaintance": 0.358,
+    "facility_staff": 0.149,
+    "stranger": 0.11,
+    "sibling": 0.074,
+    "other_family_or_other": 0.309
+  },
+  "split": {
+    "train": 360,
+    "val": 120,
+    "test": 120
+  },
+  "exploit_windows_in_range": 3537,
+  "exploit_rows_total": 10661,
+  "persons_with_exploit_rows": 234,
+  "helper_is_perp": 24,
+  "mean_tx_per_person": 312.3,
+  "truth_sha256": "8a15953b97ad671926d016ada0317c96b774f5224a6076e24cf7de6e1c242944",
+  "note": "가상 인물·가상 거래. 금액·수법 비율은 가정값, 지속기간·행위자 비율은 2024 장애인학대 현황보고서 151쪽."
+}
