@@ -1,0 +1,107 @@
+{
+  "prompt_version": "understand-v1",
+  "model": "claude-haiku-5-5",
+  "dev_n": 40,
+  "test_n": 80,
+  "final": true,
+  "split": "test",
+  "n": 80,
+  "llm": {
+    "accuracy": 0.975,
+    "macro_f1": 0.9753,
+    "dangerous_misclass": 0
+  },
+  "k0": {
+    "accuracy": 0.6375,
+    "macro_f1": 0.6396,
+    "dangerous_misclass": 0
+  },
+  "confusion": {
+    "labels": [
+      "my_choice",
+      "asked_by_someone",
+      "threatened",
+      "not_sure",
+      "unclear"
+    ],
+    "llm": [
+      [
+        16,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        16,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        15,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        15,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        16
+      ]
+    ],
+    "k0": [
+      [
+        6,
+        2,
+        0,
+        0,
+        8
+      ],
+      [
+        0,
+        13,
+        0,
+        0,
+        3
+      ],
+      [
+        0,
+        1,
+        8,
+        0,
+        7
+      ],
+      [
+        1,
+        1,
+        1,
+        8,
+        5
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        16
+      ]
+    ]
+  },
+  "failures": 0,
+  "calls": 82,
+  "cost_usd": 0.006251,
+  "generated_at": "2026-10-25T10:15:09.881Z",
+  "note": "평가 문장은 개발팀이 쓴 가상 문장(당사자 문장 아님). 요청 pattern·level은 same_person·high로 고정."
+}
