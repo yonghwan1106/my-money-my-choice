@@ -22,11 +22,14 @@ export default function HowPage() {
       <ol className="mt-5 grid gap-3 md:grid-cols-4" data-testid="how-steps">
         {STEPS.map((s, i) => (
           <li key={s.t} className="card flex flex-col gap-2">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-accent text-[1.2rem] font-extrabold text-white" aria-hidden="true">
-              {i + 1}
-            </span>
-            <p className="h3">
-              {["①", "②", "③", "④"][i]} {s.t}
+            <p className="h3 flex items-center gap-2">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-[1.2rem] font-extrabold text-white" aria-hidden="true">
+                {i + 1}
+              </span>
+              <span>
+                <span className="sr-only">{["①", "②", "③", "④"][i]} </span>
+                {s.t}
+              </span>
             </p>
             <p className="text-[1rem]">{s.d}</p>
           </li>

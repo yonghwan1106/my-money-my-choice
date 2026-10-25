@@ -84,6 +84,7 @@ export function FlowSheet({
   onMode,
   onBubbles,
   onLayer,
+  synth = false,
 }: {
   flow: Flow;
   settings: Settings;
@@ -97,6 +98,8 @@ export function FlowSheet({
   onMode: (m: LastMode) => void;
   onBubbles: (b: PreviewBubble[] | null) => void;
   onLayer: (l: LayerInfo) => void;
+  /** 시연(가상 인물)일 때 카드 머리에 「가상」 배지 — 시트가 머리띠를 덮으므로 그 자리에서 표기(추가지시 §6) */
+  synth?: boolean;
 }) {
   const [free, setFree] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -286,9 +289,16 @@ export function FlowSheet({
       data-week={flow.week.week}
     >
       <div className="flex-1 overflow-y-auto px-4 pb-6 pt-5">
-        <p className="mb-3 text-[1rem] font-bold text-muted">
-          {flow.week.week}주 ·{" "}
-          <span className={`badge badge-${flow.week.level}`}>{flow.week.level === "high" ? "위험이 높아요" : flow.week.level === "watch" ? "살펴보기" : "보통"}</span>
+        <p className="mb-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[1rem] font-bold text-muted">
+          <span>
+            {flow.week.week}주 ·{" "}
+            <span className={`badge badge-${flow.week.level}`}>{flow.week.level === "high" ? "위험이 높아요" : flow.week.level === "watch" ? "살펴보기" : "보통"}</span>
+          </span>
+          {synth ? (
+            <span className="badge ml-auto bg-[#fff7dc] text-fg ring-1 ring-[#e7d9a8]" data-testid="sheet-synth">
+              가상 인물·가상 거래
+            </span>
+          ) : null}
         </p>
         {body}
       </div>

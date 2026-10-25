@@ -39,18 +39,62 @@ function rowCells(r: EvalRow | null, id: string): Cells {
   };
 }
 
-function b2Cells(b2: B2Eval | null): Cells {
-  const r = b2?.rows.find((x) => x.model.startsWith("claude-sonnet")) ?? b2?.rows.find((x) => x.model.startsWith("claude")) ?? null;
+/** 표 1의 B2 줄: 다른 주 묶음(200개 주, 착취 주 절반)에서 쟀으므로 표 1 칸에는 숫자를 두지 않고 아래 따로 묶은 표로 보낸다. */
+function b2Cells(): Cells {
   return {
     id: "B2",
     name: ROW_NAME.B2,
-    cells: [num(r?.pr_auc ?? null), pct(r?.recall_at_rule ?? null), DASH, DASH, DASH],
+    cells: [B2_SEE_BELOW, B2_SEE_BELOW, DASH, DASH, DASH],
     sub: ["", ""],
   };
 }
+const B2_SEE_BELOW = "아래 따로";
+
+const B2_NAME = (model: string, n: number) => (model.startsWith("claude") ? `언어모델만 (${model})` : `이 AI(부스팅), 같은 ${n}개 주`);
+const llmRule = (rule: string | undefined) => {
+  const m = rule?.match(/p\s*>=\s*([0-9.]+)/);
+  return m ? `착취일 확률 ${m[1]} 이상` : DASH;
+};
+
+/** 같은 200개 주에서 잰 세 줄(eval_b2_v1.json rows 그대로) — 표 1의 전체 시험셋 숫자와 섞지 않는다. */
+export function B2Table({ ev, b2 }: { ev: EvalV1; b2: B2Eval | null }) {
+  if (!b2) return null;
+  const negN = b2.subset_n - b2.subset_pos;
+  return (
+    <section className="mt-5" data-testid="eval-table1-b2">
+      <h3 className="h3">언어모델만과 비교 — 같은 {b2.subset_n}개 주에서 (착취 주 {b2.subset_pos}개 · 아닌 주 {negN}개)</h3>
+      <div className="mt-2 overflow-hidden rounded-2xl border border-line bg-white">
+        <table className="w-full border-collapse text-[1rem]">
+          <thead>
+            <tr className="bg-soft text-left">
+              <th className="px-3 py-2">방법</th>
+              <th className="px-3 py-2 text-right">PR-AUC</th>
+              <th className="px-3 py-2 text-right">카드 기준 재현율</th>
+            </tr>
+          </thead>
+          <tbody>
+            {b2.rows.map((r) => {
+              const gbm = !r.model.startsWith("claude");
+              return (
+                <tr key={r.model} className={`border-t border-line ${gbm ? "bg-[#eef3ff] font-bold" : ""}`} data-b2-row={gbm ? "GBM" : r.model}>
+                  <td className="px-3 py-2">{B2_NAME(r.model, b2.subset_n)}</td>
+                  <td className="px-3 py-2 text-right tabular-nums">{num(r.pr_auc)}</td>
+                  <td className="px-3 py-2 text-right tabular-nums">{pct(r.recall_at_rule)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <p className="small mt-2">
+        이 {b2.subset_n}개 주는 착취 주 비율이 {pct(b2.subset_pos / b2.subset_n)}라, 착취 주 비율이 {pct(ev.split.pos_rate)}인 위 표보다 PR-AUC가 높게 나와요. 위 표의 숫자와 견주지 말고 이 세 줄끼리 견줘 주세요. 재현율 기준: 언어모델은 {llmRule(b2.rule?.llm)}, 이 AI는 위 표와 같은 카드 기준선이에요.
+      </p>
+    </section>
+  );
+}
 
 export function MethodsTable({ ev, b2 }: { ev: EvalV1; b2: B2Eval | null }) {
-  const rows: Cells[] = ROW_ORDER.map((id) => (id === "B2" ? b2Cells(b2) : rowCells(ev.rows.find((r) => r.id === id) ?? null, id)));
+  const rows: Cells[] = ROW_ORDER.map((id) => (id === "B2" ? b2Cells() : rowCells(ev.rows.find((r) => r.id === id) ?? null, id)));
   return (
     <section className="mt-6" data-testid="eval-table1">
       <h2 className="h2">
@@ -103,7 +147,8 @@ export function MethodsTable({ ev, b2 }: { ev: EvalV1; b2: B2Eval | null }) {
           </li>
         ))}
       </ul>
-      {b2 ? <p className="small mt-2">{b2.note}</p> : null}
+      {b2 ? <p className="small mt-2">{b2.note} — 숫자는 아래 따로 묶은 표에 있어요.</p> : null}
+      <B2Table ev={ev} b2={b2} />
     </section>
   );
 }

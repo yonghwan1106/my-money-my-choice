@@ -4,6 +4,7 @@ import { FileX, LockOpen, MessageCircleQuestion, UserCheck } from "lucide-react"
 import { PhoneFrame } from "@/components/PhoneFrame";
 import { DemoBadge } from "@/components/DemoBadge";
 import { LAYERS } from "@/components/layers";
+import { HomeCardExample } from "@/components/HomeCardExample";
 
 const PROMISES = [
   { icon: LockOpen, text: "돈 보내기를 막지 않아요" },
@@ -14,7 +15,7 @@ const PROMISES = [
 
 export default function Home() {
   return (
-    <PhoneFrame side={LAYERS.intro} top={<DemoBadge />}>
+    <PhoneFrame side={LAYERS.intro} top={<DemoBadge />} sideExtra={<HomeCardExample />}>
       <main>
         <h1 className="h1 mt-4">내 돈, 내가 정해요</h1>
         <p className="mt-2 text-[1.1rem] font-bold leading-snug text-accent">

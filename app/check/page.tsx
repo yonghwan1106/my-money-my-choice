@@ -262,6 +262,7 @@ function Check() {
           onMode={setLastMode}
           onBubbles={setBubbles}
           onLayer={setLayer}
+          synth={!!scenario}
         />
       ) : null}
     </PhoneFrame>

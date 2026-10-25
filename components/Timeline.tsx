@@ -57,6 +57,7 @@ export function Timeline({
   // 제곱근 눈금: 큰 돈 한 주가 있어도 평소 범위 띠가 보이게(눈금 숫자는 실제 값)
   const y = (v: number) => PAD.t + (1 - Math.sqrt(Math.min(Math.max(v, 0), maxV) / maxV)) * (H - PAD.t - PAD.b);
   const colW = (W - PAD.l - PAD.r) / n;
+  const BAND_MIN = 8;
   const ticks = [...new Set([0, niceMax(maxV / 25), niceMax(maxV / 4), maxV])].filter((t) => t <= maxV);
   // 달 눈금: 그 주 월요일의 달이 앞 주와 달라지는 주
   const months: { week: number; label: string }[] = [];
@@ -80,18 +81,13 @@ export function Timeline({
           </g>
         ))}
         {/* 평소 범위 띠 */}
-        {visible.map((w) =>
-          w.band ? (
-            <rect
-              key={`b${w.week}`}
-              x={x(w.week) - colW / 2}
-              width={colW + 0.5}
-              y={y(man(w.band.hi))}
-              height={Math.max(1, y(man(w.band.lo)) - y(man(w.band.hi)))}
-              fill="var(--band)"
-            />
-          ) : null,
-        )}
+        {/* 평소 범위가 거의 0이면(평소 밖으로 나가는 돈이 없음) 띠가 사라지지 않게 바닥에서 최소 BAND_MIN px로 그린다 */}
+        {visible.map((w) => {
+          if (!w.band) return null;
+          const yLo = y(man(w.band.lo));
+          const h = Math.max(BAND_MIN, yLo - y(man(w.band.hi)));
+          return <rect key={`b${w.week}`} x={x(w.week) - colW / 2} width={colW + 0.5} y={yLo - h} height={h} fill="var(--band)" />;
+        })}
         {/* 고른 주 */}
         {selected !== null && selected <= shownUpTo ? (
           <rect x={x(selected) - colW / 2} width={colW} y={PAD.t} height={H - PAD.t - PAD.b} fill="none" stroke="#1d4ed8" strokeWidth={1.5} strokeDasharray="3 2" />

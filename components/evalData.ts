@@ -79,6 +79,7 @@ export interface B2Eval {
   subset_pos: number;
   rows: { model: string; pr_auc: number | null; recall_at_rule: number | null; calls?: number; failures?: number }[];
   note: string;
+  rule?: { llm: string; gbm: string; t1: number };
 }
 export interface PolicyTests {
   passed: number;

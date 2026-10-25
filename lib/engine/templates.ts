@@ -257,7 +257,7 @@ function patternText(p: PatternId, f: Facts, w: WeekResult): PatternText {
         e1: `평소에는 한 주에 ${money(f.usual_week_krw)}쯤 나갔어요.`,
         e2: `요즘은 한 주에 ${money(f.week_total_krw ?? w.outflow_krw)}쯤 나가요.`,
         summary: `${W}주 동안 평소보다 ${ex}이 더 나갔어요.`,
-        items: { "이어진 기간": `${W}주`, "더 나간 돈": ex },
+        items: { "이어진 기간": `${W}주`, "전체 지출이 평소보다 더 나간 돈": ex },
         period: period(W),
       };
     }
@@ -335,14 +335,23 @@ export function explainCard(w: WeekResult, name: string): ExplainCard {
   };
 }
 
+const SECOND_KEY_CONTEXT: Partial<Record<PatternId, string>> = {
+  same_person: "같은 사람에게 보낸",
+  micro_repeat: "작은 결제",
+  big_spend: "큰 지출",
+};
+
 /** 언어모델·고정 문안 공통 입력. 숫자는 모두 서식한 문자열. */
 export function helperNoteFacts(w: WeekResult): HelperNoteFacts {
   const first = textFor(w, w.pattern);
   const items: Record<string, string> = { ...first.items };
   if (w.pattern && w.pattern2 && w.pattern2 !== w.pattern) {
     const second = textFor(w, w.pattern2);
-    for (const [k, v] of Object.entries(second.items)) {
+    // 둘째 수법의 뜻이 모호한 낱말(횟수·합계·금액)은 무엇의 횟수·합계인지 붙인다 — 요약이 다른 수법의 숫자와 섞어 쓰지 않게.
+    const ctx = SECOND_KEY_CONTEXT[w.pattern2];
+    for (const [k0, v] of Object.entries(second.items)) {
       if (Object.keys(items).length >= 8) break;
+      const k = ctx && (k0 === "횟수" || k0 === "합계" || k0 === "금액") ? `${ctx} ${k0}` : k0;
       items[k in items ? `${k}(2)` : k] = v;
     }
   }
@@ -385,7 +394,7 @@ export function helperNoteTemplateFromFacts(p: PatternId, f: HelperNoteFacts): s
       if (has("횟수", "합계")) return `한 주에 작은 결제가 ${it["횟수"]}, 모두 ${it["합계"]}이었어요.`;
       break;
     case "slow_leak":
-      if (has("이어진 기간", "더 나간 돈")) return `${it["이어진 기간"]} 동안 평소보다 ${it["더 나간 돈"]}이 더 나갔어요.`;
+      if (has("이어진 기간", "전체 지출이 평소보다 더 나간 돈")) return `${it["이어진 기간"]} 동안 평소보다 ${it["전체 지출이 평소보다 더 나간 돈"]}이 더 나갔어요.`;
       break;
     case "big_spend":
       if (has("금액")) return `한 번에 ${it["금액"]}이 나갔어요. 평소보다 훨씬 큰 돈이에요.`;

@@ -32,7 +32,7 @@ export function CounselInfo({ name, onHome }: { name: string; onHome: () => void
       <Phone size={56} strokeWidth={1.75} aria-hidden="true" className="text-accent" />
       <h2 className="h2 mt-3">상담 안내</h2>
       <p className="mt-3 text-[1.5rem] font-extrabold leading-snug" data-testid="counsel-number">
-        장애인권익옹호기관 1644-8295
+        장애인권익옹호기관 <span className="whitespace-nowrap">1644-8295</span>
       </p>
       <p className="mt-3">전화·문자·카카오톡 모두 돼요. 전국 어디서나 같은 번호예요.</p>
       <p className="mt-2">사는 곳 지역발달장애인지원센터에서도 도와줘요.</p>
