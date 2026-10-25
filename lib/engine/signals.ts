@@ -7,8 +7,9 @@ import {
 } from "./baseline";
 
 export const SIGNAL_PARAMS = {
-  s1_z: 4,                 // 로버스트 z ≥
-  s1_min_base: 3,          // 범주 평소 거래가 이보다 적으면 「쓰는 돈」 전체 평소와 비교
+  s1_z: 6,                 // 로버스트 z ≥ (조정: 4 → 6, signals_tuning.md)
+  s1_min_base: 3,          // 깨끗한 평소 주에 그 범주 거래가 이보다 적으면 그 앞 모든 주의 같은 범주로 비교
+  s1_min_krw: 50_000,      // 금액 ≥ (조정: 없음 → 5만 원)
   s2_new_days: 28,         // 최근 28일 안에 처음 돈을 받은 사람
   s2_ratio: 1,             // 값 ≥
   s3_score: 2,             // −log10 P > (P < 0.01)
@@ -22,11 +23,14 @@ export const SIGNAL_PARAMS = {
   s6_count: 2,
   s7_score: 2,
   s7_k: 6,
-  s8_k: 0.5,               // CUSUM 여유 k·σ
+  s8_center: "mean" as "median" | "mean", // μ = 평소 주 outflow의 평균 (조정: 중앙값 → 평균)
+  s8_k: 0.75,              // CUSUM 여유 k·σ (조정: 0.5 → 0.75)
   s8_step_cap: 2,          // 한 주가 더하는 몫 ≤ 2σ (큰 일 한 번이 몇 달 동안 S8을 켜 두지 않게)
   s8_h: 4,                 // C/σ ≥
   s8_c_cap: 5,             // C/σ 상한
   s9_ratio: 0.2,
+  s9_min_base_krw: 0,      // 평소 주말 잔액 중앙값이 이보다 작으면 판단하지 않음(0 = 조건 없음)
+  s9_first_cross: 1,       // 1 = 바닥으로 처음 내려간 주에만 발화(계속 바닥인 주는 다시 켜지 않음) (조정: 0 → 1)
   s10_days: 5,             // 예상 급여일 ± 5일
   s10_hours: 72,
   s10_ratio: 0.7,
@@ -64,6 +68,7 @@ export interface SignalState {
   leak: { weeks: number; excess: number; transfer: number; cash: number; cpSums: Record<string, number> };
   lastBalance: number | null;
   maxDay: number;
+  prevLow: boolean;                         // 지난주 S9 값이 기준 아래였나
 }
 
 export interface WeekCtx {
@@ -117,7 +122,7 @@ function s1(st: SignalState, ctx: WeekCtx, enough: boolean): SignalResult {
     const scale = m > 0 ? 1.4826 * m : Math.max(med * 0.5, 10_000);
     const x = ABS(t);
     const z = (x - med) / scale;
-    const fired = z >= P.s1_z && x >= (base.length ? quantile(base, 0.9) : 0);
+    const fired = z >= P.s1_z && x >= (base.length ? quantile(base, 0.9) : 0) && x >= P.s1_min_krw;
     if (!best || (fired && !best.fired) || (fired === best.fired && z > best.z)) best = { z, t, med, fired };
   }
   if (!best) return result("S1", 0, false);
@@ -368,7 +373,7 @@ function s8(st: SignalState, ctx: WeekCtx, enough: boolean, x: number, weekCp: R
     return result("S8", null, false);
   }
   const xs = ctx.baseline.map((r) => r.outflow);
-  const mu = median(xs);
+  const mu = P.s8_center === "mean" ? mean(xs) : median(xs);
   const sigma = Math.max(std(xs), 10_000);
   const step = Math.min(x - mu - P.s8_k * sigma, P.s8_step_cap * sigma);
   // C/σ는 h+1에서 자른다 — 큰 유출이 끝난 뒤 몇 달 동안 계속 켜져 있지 않게(여유 0.5σ씩 줄어 2주 뒤 꺼짐)
@@ -398,13 +403,18 @@ function s8(st: SignalState, ctx: WeekCtx, enough: boolean, x: number, weekCp: R
 
 // ---------------------------------------------------------------- S9
 function s9(st: SignalState, ctx: WeekCtx, enough: boolean): SignalResult {
-  if (!enough || st.lastBalance === null) return result("S9", null, false);
+  if (!enough || st.lastBalance === null) {
+    st.prevLow = false;
+    return result("S9", null, false);
+  }
   const bals = ctx.baseline.map((r) => r.closingBalance).filter((b): b is number => b !== null);
-  if (bals.length === 0) return result("S9", null, false);
+  if (bals.length === 0) { st.prevLow = false; return result("S9", null, false); }
   const med = median(bals);
-  if (!(med > 0)) return result("S9", null, false);
+  if (!(med > 0) || med < SIGNAL_PARAMS.s9_min_base_krw) { st.prevLow = false; return result("S9", null, false); }
   const v = st.lastBalance / med;
-  const fired = v <= SIGNAL_PARAMS.s9_ratio;
+  const low = v <= SIGNAL_PARAMS.s9_ratio;
+  const fired = low && !(SIGNAL_PARAMS.s9_first_cross && st.prevLow);
+  st.prevLow = low;
   return result("S9", v, fired, fired ? { balance_low: true } : {});
 }
 

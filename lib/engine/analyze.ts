@@ -23,7 +23,7 @@ export function createState(w1: number, firstDay: number): SignalState {
   return {
     w1, firstDay, all: [], firstSeen: new Map(), firstOut: new Map(), firstBill: new Map(), telecomKeys: new Set(),
     records: [], cusum: 0, leak: { weeks: 0, excess: 0, transfer: 0, cash: 0, cpSums: {} }, lastBalance: null,
-    maxDay: -Infinity,
+    maxDay: -Infinity, prevLow: false,
   };
 }
 
