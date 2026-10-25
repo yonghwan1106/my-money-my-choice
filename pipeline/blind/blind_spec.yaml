@@ -1,0 +1,63 @@
+# Blind patterns (spec 4-5, P9) - written by W-D after the model-frozen tag.
+# Seen: report p.30 definition of economic exploitation, the two one-line
+# definitions below, gen_synth.py usual-flow helpers (imported, not changed),
+# stats_sources.yaml (durations / perpetrator shares). Not seen: lib/engine/,
+# data/model/, data/eval/, pipeline/work/features*.
+# All amounts, counts and hours below are assumed values chosen by W-D.
+seed: 20261027
+persons: {Q1: 20, Q2: 20, none: 40}
+id_prefix: "b"            # b0001 .. b0080
+split: "test"             # every blind person is a test person
+cohort: "new"             # Q1/Q2 start inside the period
+format_share: {"1": 0.5, "2": 0.5}
+cp949_share: 0.2
+preamble_share: 0.1
+intensity:                # share of monthly income taken out by the pattern
+  high: [0.60, 0.90]
+  mid: [0.30, 0.60]
+  low: [0.10, 0.30]
+weekly_take_jitter: [0.8, 1.2]   # weekly take = share * income * 7/30.44 * U(jitter)
+duration: "stats_sources.yaml duration_weeks; end = min(26, start + D - 1)"
+perpetrator: "stats_sources.yaml perpetrator shares (largest-remainder quota per pattern)"
+
+Q1:
+  name: "체크카드 대리 사용"
+  shops: "본인이 평소 안 가던 곳 65% (사람마다 예시상점6~20 중 2~4곳) + 평소 가게 목록 35%"
+  amount_won: [15000, 150000]     # raw draw per payment, 100-won units, then scaled to the weekly take
+  per_week: [3, 9]                # card payments per week
+  hours: "60% 밤 20:00~23:59(아무 요일), 40% 평일 낮 10:00~15:59(본인이 일하는 시간)"
+  start_week: [9, 20]
+  definition: "다른 사람이 본인 체크카드로 결제한다"
+  unfamiliar_shop_ids: [6, 20]
+  unfamiliar_per_person: [2, 4]
+  unfamiliar_share: 0.65
+  night_share: 0.60
+  night_hours: [20, 23]
+  day_hours: [10, 15]
+  pair_prob: 0.25                 # second payment at the same place 5~30 min later (split payment)
+  pair_gap_min: [5, 30]
+  min_payment_won: 3000
+  counterparty: "없음 (카드 결제라 상대방 이름이 기록에 없음) -> perp_label null"
+
+Q2:
+  name: "현금 인출 반복 후 전달"
+  amount_won: [30000, 300000]     # raw draw per withdrawal, 10,000-won units, then scaled to the weekly take
+  per_week: [2, 5]                # withdrawals per week (fewer when the weekly take is small)
+  hours: "09:00~21:59, 수입이 들어온 주는 첫 인출을 수입 0~24시간 뒤에"
+  after_income_prob: 0.5          # in a week with salary/benefit, chance the first withdrawal follows it
+  start_week: [9, 20]
+  definition: "본인이 현금을 자주 찾아 다른 사람에게 건넨다(송금 흔적 없음)"
+  after_income_hours: [0, 24]
+  atm_hours: [9, 21]
+  split_prob: 0.30                # one withdrawal split into two, 3~20 min apart
+  split_gap_min: [3, 20]
+  min_withdrawal_won: 10000
+  min_raw_per_withdrawal: 30000   # k = min(k, max(1, take // this))
+  counterparty: "없음 (현금 전달이라 송금 기록 없음) -> perp_label null"
+
+tricky:                   # 12 of the 40 'none' persons: one look-alike event each, weeks 6~24
+  trip: {n: 3, what: "2~3일 여행 결제 묶음, 하루 2~3건, 예시상점21~30, 3만~15만 원, 08~21시"}
+  appliance: {n: 2, what: "푸른가전 카드 1회 50만~150만 원"}
+  family_event: {n: 3, what: "가족 경조사비를 한 주 안에 현금으로 2~3회 인출, 각 10만~30만 원"}
+  gift: {n: 2, what: "선물 카드 결제 한 저녁 1~2건, 꽃길꽃집 또는 예시상점36~40, 5만~20만 원, 18~21시"}
+  deposit: {n: 2, what: "이사 보증금 이체 1회(새 상대방, 100만~300만 원) + 이후 14일 새 동네 가게 예시상점31~35 하루 1~2건 평소 금액"}
