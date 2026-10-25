@@ -1,0 +1,10 @@
+@import "tailwindcss";
+@import "pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css";
+
+@theme {
+  --font-sans: "Pretendard Variable", Pretendard, system-ui, sans-serif;
+}
+
+html {
+  font-size: 18px;
+}
