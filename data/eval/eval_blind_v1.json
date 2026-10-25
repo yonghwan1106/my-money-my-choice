@@ -1,0 +1,26 @@
+{
+  "blind_commit": "b37636b198a394d66e46204894bb9c0df3034fc8",
+  "model_frozen": "cdc12e9c331670f642f403e1cf4bfecc79de5610",
+  "n": {
+    "Q1": 20,
+    "Q2": 20,
+    "none": 40
+  },
+  "recall": {
+    "Q1": {
+      "persons": 0.75,
+      "windows": 0.3935,
+      "n_persons_with_rows": 20,
+      "n_windows": 216
+    },
+    "Q2": {
+      "persons": 0.95,
+      "windows": 0.6161,
+      "n_persons_with_rows": 20,
+      "n_windows": 224
+    }
+  },
+  "cards_per_month_none": 0.7956,
+  "spec_summary": "Q1: name=체크카드 대리 사용, shops=본인이 평소 안 가던 곳 65% (사람마다 예시상점6~20 중 2~4곳) + 평소 가게 목록 35%, amount_won=[15000, 150000], per_week=[3, 9], hours=60% 밤 20:00~23:59(아무 요일), 40% 평일 낮 10:00~15:59(본인이 일하는 시간), start_week=[9, 20] / Q2: name=현금 인출 반복 후 전달, amount_won=[30000, 300000], per_week=[2, 5], hours=09:00~21:59, 수입이 들어온 주는 첫 인출을 수입 0~24시간 뒤에, after_income_prob=0.5, start_week=[9, 20]",
+  "note": "동결 모델·동결 임계값으로 한 번만 잼. 결과가 낮아도 고치지 않음. 가상 데이터 기준."
+}
