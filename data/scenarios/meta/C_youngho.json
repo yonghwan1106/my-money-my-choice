@@ -1,0 +1,130 @@
+{
+  "id": "C",
+  "key": "C_youngho",
+  "title": "영호 씨(35)",
+  "person": {
+    "displayName": "영호",
+    "fullName": "최영호"
+  },
+  "sample": {
+    "f1": "/samples/C_youngho_f1.csv",
+    "f2": "/samples/C_youngho_f2.csv"
+  },
+  "settings": {
+    "consent": true,
+    "displayName": "영호",
+    "helpers": [
+      {
+        "id": "h1",
+        "alias": "오지현 선생님",
+        "relation": "center",
+        "scope": "high_only",
+        "excludePatterns": [],
+        "link": {
+          "state": "not_in_list"
+        }
+      }
+    ],
+    "predelegate": {
+      "enabled": false,
+      "helperId": null
+    }
+  },
+  "links": {
+    "h1": {
+      "state": "not_in_list"
+    }
+  },
+  "script": [
+    {
+      "week": 16,
+      "inputs": [
+        {
+          "type": "later"
+        }
+      ]
+    },
+    {
+      "week": 17,
+      "inputs": [
+        {
+          "type": "later"
+        }
+      ]
+    },
+    {
+      "week": 18,
+      "inputs": [
+        {
+          "type": "later"
+        }
+      ]
+    },
+    {
+      "week": 19,
+      "inputs": [
+        {
+          "type": "answer",
+          "answer": "not_sure"
+        },
+        {
+          "type": "continue"
+        },
+        {
+          "type": "notify",
+          "pick": [
+            "h1"
+          ]
+        },
+        {
+          "type": "continue"
+        },
+        {
+          "type": "counsel",
+          "true": true
+        }
+      ]
+    }
+  ],
+  "expected": {
+    "weeks": [
+      {
+        "week": 16,
+        "level": "high",
+        "pattern": "loan_passthrough",
+        "note": "cp 장태식"
+      },
+      {
+        "week": 17,
+        "level": "high",
+        "pattern": "loan_passthrough"
+      },
+      {
+        "week": 18,
+        "level": "high",
+        "pattern": "new_phone_bills",
+        "note": "no cp"
+      },
+      {
+        "week": 19,
+        "level": "high",
+        "pattern": "after_income",
+        "note": "same cp high 3 weeks (16,17,19) -> rule 15 counsel"
+      }
+    ],
+    "other_weeks": "normal"
+  },
+  "event_rows": [
+    148,
+    149,
+    158,
+    160,
+    169,
+    174,
+    176,
+    177,
+    194
+  ],
+  "n_rows": 291,
+  "note": "가상 인물·가상 거래(연습용). link의 cpLabel은 precompute에서 cpKey로 바꾼다."
+}

@@ -1,0 +1,113 @@
+{
+  "id": "A",
+  "key": "A_minsu",
+  "title": "민수 씨(27)",
+  "person": {
+    "displayName": "민수",
+    "fullName": "김민수"
+  },
+  "sample": {
+    "f1": "/samples/A_minsu_f1.csv",
+    "f2": "/samples/A_minsu_f2.csv"
+  },
+  "settings": {
+    "consent": true,
+    "displayName": "민수",
+    "helpers": [
+      {
+        "id": "h1",
+        "alias": "누나",
+        "relation": "family",
+        "scope": "high_only",
+        "excludePatterns": [
+          "micro_repeat"
+        ],
+        "link": {
+          "state": "linked",
+          "cpLabel": "김은정"
+        }
+      },
+      {
+        "id": "h2",
+        "alias": "이수진 선생님",
+        "relation": "center",
+        "scope": "high_only",
+        "excludePatterns": [],
+        "link": {
+          "state": "not_in_list"
+        }
+      }
+    ],
+    "predelegate": {
+      "enabled": false,
+      "helperId": null
+    }
+  },
+  "links": {
+    "h1": {
+      "state": "linked",
+      "cpLabel": "김은정"
+    },
+    "h2": {
+      "state": "not_in_list"
+    }
+  },
+  "script": [
+    {
+      "week": 20,
+      "inputs": [
+        {
+          "type": "free_text",
+          "text": "형이 급하다고 빌려 달래서 보냈어요"
+        },
+        {
+          "type": "understand_reply",
+          "ok": true
+        },
+        {
+          "type": "who",
+          "pick": "other"
+        },
+        {
+          "type": "notify",
+          "pick": [
+            "h2"
+          ]
+        },
+        {
+          "type": "continue"
+        }
+      ]
+    }
+  ],
+  "expected": {
+    "weeks": [
+      {
+        "week": 18,
+        "level": "watch",
+        "note": "new cp"
+      },
+      {
+        "week": 19,
+        "level": "watch_or_higher"
+      },
+      {
+        "week": 20,
+        "level": "high",
+        "pattern": "same_person",
+        "pattern2": "after_income"
+      }
+    ],
+    "other_weeks": "normal",
+    "b0_first_week": 20
+  },
+  "event_rows": [
+    188,
+    196,
+    206,
+    209,
+    219
+  ],
+  "n_rows": 291,
+  "note": "가상 인물·가상 거래(연습용). link의 cpLabel은 precompute에서 cpKey로 바꾼다."
+}

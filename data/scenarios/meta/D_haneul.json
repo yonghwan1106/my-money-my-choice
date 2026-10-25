@@ -1,0 +1,67 @@
+{
+  "id": "D",
+  "key": "D_haneul",
+  "title": "하늘 씨(24)",
+  "person": {
+    "displayName": "하늘",
+    "fullName": "정하늘"
+  },
+  "sample": {
+    "f1": "/samples/D_haneul_f1.csv",
+    "f2": "/samples/D_haneul_f2.csv"
+  },
+  "settings": {
+    "consent": true,
+    "displayName": "하늘",
+    "helpers": [
+      {
+        "id": "h1",
+        "alias": "엄마",
+        "relation": "family",
+        "scope": "high_only",
+        "excludePatterns": [],
+        "link": {
+          "state": "linked",
+          "cpLabel": "윤혜진"
+        }
+      }
+    ],
+    "predelegate": {
+      "enabled": false,
+      "helperId": null
+    }
+  },
+  "links": {
+    "h1": {
+      "state": "linked",
+      "cpLabel": "윤혜진"
+    }
+  },
+  "script": [
+    {
+      "week": 21,
+      "inputs": [
+        {
+          "type": "answer",
+          "answer": "my_choice"
+        }
+      ]
+    }
+  ],
+  "expected": {
+    "weeks": [
+      {
+        "week": 21,
+        "level": "watch",
+        "pattern": "big_spend"
+      }
+    ],
+    "other_weeks": "normal",
+    "b0_first_week": 21
+  },
+  "event_rows": [
+    238
+  ],
+  "n_rows": 295,
+  "note": "가상 인물·가상 거래(연습용). link의 cpLabel은 precompute에서 cpKey로 바꾼다."
+}

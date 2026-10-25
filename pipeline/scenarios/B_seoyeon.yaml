@@ -1,0 +1,41 @@
+# 시나리오 B — 이서연(31), 「서연」. 가상 인물·가상 거래, 금액·날짜 전부 가정값.
+id: B
+key: B_seoyeon
+title: 서연 씨(31)
+person: {displayName: 서연, fullName: 이서연, age: 31}
+seed: 102
+usual:
+  salary: {day: 25, amount: 900000, employer: 늘봄보호작업장, memo: 급여}
+  benefit: {day: 20, amount: 500000, memo: 장애수당}
+  rent: {day: 1, amount: 250000, label: 월세}
+  telecom: [{day: 21, amount: 40000, label: 예시통신B}]
+  card_daily_rate: 1.5
+  start_balance: 800000
+  disable: [family, friends, occasional, cash, micro, insurance]   # 언니 이서진과는 거래 없음
+events:
+  - {at: "2026-07-21 10:30", type: transfer_out, cp: 김도현, amount: 400000}
+  - {at: "2026-08-21 11:02", type: transfer_out, cp: 김도현, amount: 400000}
+  - {at: "2026-09-21 10:47", type: transfer_out, cp: 김도현, amount: 400000}
+settings:
+  consent: true
+  displayName: 서연
+  helpers:
+    - {id: h1, alias: 김도현 선생님, relation: activity, scope: high_only, excludePatterns: []}
+    - {id: h2, alias: 언니, relation: family, scope: high_only, excludePatterns: []}
+  predelegate: {enabled: false, helperId: null}
+links:
+  h1: {state: linked, cpLabel: 김도현}
+  h2: {state: not_in_list}
+expected:
+  weeks:
+    - {week: 16, level: high, pattern: after_income, note: "cp 김도현 = h1"}
+    - {week: 20, level: high, pattern: after_income}
+    - {week: 25, level: high, pattern: after_income}
+  other_weeks: normal
+script:
+  - week: 16
+    inputs:
+      - {type: answer, answer: someone_told}
+      - {type: continue}
+      - {type: notify, pick: [h2]}
+      - {type: continue}

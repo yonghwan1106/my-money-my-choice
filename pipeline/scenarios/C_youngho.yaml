@@ -1,0 +1,53 @@
+# 시나리오 C — 최영호(35), 「영호」. 가상 인물·가상 거래, 금액·날짜 전부 가정값.
+id: C
+key: C_youngho
+title: 영호 씨(35)
+person: {displayName: 영호, fullName: 최영호, age: 35}
+seed: 103
+usual:
+  salary: {day: 10, amount: 1800000, employer: 초록보호작업장, memo: 급여}
+  benefit: null
+  rent: {day: 1, amount: 300000, label: 월세}
+  telecom: [{day: 21, amount: 44000, label: 예시통신D}]   # 원래 쓰던 통신 1건(새 회선 A·B·C와 다른 이름)
+  card_daily_rate: 1.5
+  start_balance: 600000
+  disable: [family, friends, occasional, cash, micro, insurance]
+events:
+  - {at: "2026-07-21 13:20", type: loan_in, cp: 예시캐피탈, amount: 3000000}
+  - {at: "2026-07-21 18:05", type: transfer_out, cp: 장태식, amount: 2800000}
+  - {at: "2026-07-28 11:00", type: loan_in, cp: 예시카드론, amount: 2000000}
+  - {at: "2026-07-29 09:40", type: transfer_out, cp: 장태식, amount: 1900000}
+  - {at: "2026-08-03 07:00", type: autopay, cp: 예시통신A, amount: 49000}
+  - {at: "2026-08-05 07:00", type: autopay, cp: 예시통신B, amount: 52000}
+  - {at: "2026-08-06 07:00", type: autopay, cp: 예시통신C, amount: 47000}
+  - {at: "2026-08-06 07:05", type: autopay, cp: 단말기할부 예시통신C, amount: 38000}
+  - {at: "2026-08-11 10:10", type: transfer_out, cp: 장태식, amount: 1200000}
+settings:
+  consent: true
+  displayName: 영호
+  helpers:
+    - {id: h1, alias: 오지현 선생님, relation: center, scope: high_only, excludePatterns: []}
+  predelegate: {enabled: false, helperId: null}
+links:
+  h1: {state: not_in_list}
+expected:
+  weeks:
+    - {week: 16, level: high, pattern: loan_passthrough, note: "cp 장태식"}
+    - {week: 17, level: high, pattern: loan_passthrough}
+    - {week: 18, level: high, pattern: new_phone_bills, note: "no cp"}
+    - {week: 19, level: high, pattern: after_income, note: "same cp high 3 weeks (16,17,19) -> rule 15 counsel"}
+  other_weeks: normal
+script:
+  - week: 16
+    inputs: [{type: later}]
+  - week: 17
+    inputs: [{type: later}]
+  - week: 18
+    inputs: [{type: later}]
+  - week: 19
+    inputs:
+      - {type: answer, answer: not_sure}
+      - {type: continue}
+      - {type: notify, pick: [h1]}
+      - {type: continue}
+      - {type: counsel, yes: true}

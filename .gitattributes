@@ -1,0 +1,2 @@
+# bank-file samples: keep exact bytes (CRLF, CP949)
+*.csv -text

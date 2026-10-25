@@ -1,0 +1,34 @@
+# 시나리오 D — 정하늘(24), 「하늘」. 가상 인물·가상 거래, 금액·날짜 전부 가정값.
+id: D
+key: D_haneul
+title: 하늘 씨(24)
+person: {displayName: 하늘, fullName: 정하늘, age: 24}
+seed: 104
+usual:
+  salary: {day: 15, amount: 1100000, employer: 늘봄보호작업장, memo: 급여}
+  benefit: null
+  rent: null
+  telecom: []
+  fixed_incoming: [{day: 5, amount: 100000, frm: 윤혜진}]   # 엄마
+  card_daily_rate: 1.5
+  start_balance: 1500000
+  disable: [family, friends, occasional, cash, micro, insurance]
+events:
+  - {at: "2026-08-27 15:40", type: card, cp: 푸른가전, amount: 1290000}
+settings:
+  consent: true
+  displayName: 하늘
+  helpers:
+    - {id: h1, alias: 엄마, relation: family, scope: high_only, excludePatterns: []}
+  predelegate: {enabled: false, helperId: null}
+links:
+  h1: {state: linked, cpLabel: 윤혜진}
+expected:
+  weeks:
+    - {week: 21, level: watch, pattern: big_spend}
+  other_weeks: normal
+  b0_first_week: 21
+script:
+  - week: 21
+    inputs:
+      - {type: answer, answer: my_choice}

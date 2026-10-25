@@ -1,0 +1,104 @@
+{
+  "id": "B",
+  "key": "B_seoyeon",
+  "title": "서연 씨(31)",
+  "person": {
+    "displayName": "서연",
+    "fullName": "이서연"
+  },
+  "sample": {
+    "f1": "/samples/B_seoyeon_f1.csv",
+    "f2": "/samples/B_seoyeon_f2.csv"
+  },
+  "settings": {
+    "consent": true,
+    "displayName": "서연",
+    "helpers": [
+      {
+        "id": "h1",
+        "alias": "김도현 선생님",
+        "relation": "activity",
+        "scope": "high_only",
+        "excludePatterns": [],
+        "link": {
+          "state": "linked",
+          "cpLabel": "김도현"
+        }
+      },
+      {
+        "id": "h2",
+        "alias": "언니",
+        "relation": "family",
+        "scope": "high_only",
+        "excludePatterns": [],
+        "link": {
+          "state": "not_in_list"
+        }
+      }
+    ],
+    "predelegate": {
+      "enabled": false,
+      "helperId": null
+    }
+  },
+  "links": {
+    "h1": {
+      "state": "linked",
+      "cpLabel": "김도현"
+    },
+    "h2": {
+      "state": "not_in_list"
+    }
+  },
+  "script": [
+    {
+      "week": 16,
+      "inputs": [
+        {
+          "type": "answer",
+          "answer": "someone_told"
+        },
+        {
+          "type": "continue"
+        },
+        {
+          "type": "notify",
+          "pick": [
+            "h2"
+          ]
+        },
+        {
+          "type": "continue"
+        }
+      ]
+    }
+  ],
+  "expected": {
+    "weeks": [
+      {
+        "week": 16,
+        "level": "high",
+        "pattern": "after_income",
+        "note": "cp 김도현 = h1"
+      },
+      {
+        "week": 20,
+        "level": "high",
+        "pattern": "after_income"
+      },
+      {
+        "week": 25,
+        "level": "high",
+        "pattern": "after_income"
+      }
+    ],
+    "other_weeks": "normal"
+  },
+  "event_rows": [
+    188,
+    248,
+    307
+  ],
+  "n_rows": 332,
+  "note": "가상 인물·가상 거래(연습용). link의 cpLabel은 precompute에서 cpKey로 바꾼다."
+}

@@ -1,0 +1,47 @@
+# 시나리오 A — 김민수(27), 표시 이름 「민수」. 가상 인물·가상 거래, 금액·날짜 전부 가정값.
+# 학습 전에 커밋한다(구현명세 §4-3). 기대 결과는 대조용이며 고치지 않는다.
+id: A
+key: A_minsu
+title: 민수 씨(27)
+person: {displayName: 민수, fullName: 김민수, age: 27}
+seed: 101
+usual:                       # gen_synth.random_profile(시드) 위에 덮어쓰는 고정값
+  salary: {day: 17, amount: 1300000, employer: 햇살보호작업장, memo: 급여}
+  benefit: {day: 20, amount: 400000, memo: 장애인연금}
+  fixed_transfers: [{day: 15, amount: 50000, to: 김은정}]   # 누나
+  rent: {day: 1, amount: 300000, label: 월세}
+  telecom: [{day: 21, amount: 45000, label: 예시통신A}]
+  card_daily_rate: 1.5       # 카드 생활비(파일 첫 주가 2026-04-06 주가 되게)
+  start_balance: 1200000
+  disable: [family, friends, occasional, cash, micro, insurance]   # 각본에 없는 무작위 흐름은 끈다
+events:
+  - {at: "2026-08-04 10:12", type: transfer_out, cp: 한지훈, amount: 150000}
+  - {at: "2026-08-07 19:40", type: transfer_out, cp: 한지훈, amount: 100000}
+  - {at: "2026-08-12 20:05", type: transfer_out, cp: 한지훈, amount: 100000}
+  - {at: "2026-08-14 21:30", type: transfer_out, cp: 한지훈, amount: 50000}
+  - {at: "2026-08-18 09:15", type: transfer_out, cp: 한지훈, amount: 1070000}
+settings:
+  consent: true
+  displayName: 민수
+  helpers:
+    - {id: h1, alias: 누나, relation: family, scope: high_only, excludePatterns: [micro_repeat]}
+    - {id: h2, alias: 이수진 선생님, relation: center, scope: high_only, excludePatterns: []}
+  predelegate: {enabled: false, helperId: null}
+links:                       # 시연 기본 연결 (cpLabel 또는 not_in_list)
+  h1: {state: linked, cpLabel: 김은정}
+  h2: {state: not_in_list}
+expected:
+  weeks:
+    - {week: 18, level: watch, note: "new cp"}
+    - {week: 19, level: watch_or_higher}
+    - {week: 20, level: high, pattern: same_person, pattern2: after_income}
+  other_weeks: normal
+  b0_first_week: 20
+script:                      # 시연 답 경로
+  - week: 20
+    inputs:
+      - {type: free_text, text: "형이 급하다고 빌려 달래서 보냈어요"}
+      - {type: understand_reply, ok: true}
+      - {type: who, pick: other}
+      - {type: notify, pick: [h2]}
+      - {type: continue}
