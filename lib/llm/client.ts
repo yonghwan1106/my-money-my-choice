@@ -30,6 +30,8 @@ export interface Deps {
   ip?: string;
   /** 호출 기록(평가 스크립트의 비용 계산용). 본문은 담지 않는다. */
   onCall?: (info: { model: string; ok: boolean; ms: number; input_tokens: number; output_tokens: number; error?: string }) => void;
+  /** 시도마다 검사 결과(평가 스크립트용). 텍스트 블록이 없으면 null. */
+  onCheck?: (info: { model: string; attempt: number; checks: Record<string, boolean> | null; passed: boolean; raw?: string }) => void;
 }
 
 function createFor(apiKey: string): CreateFn {
@@ -55,17 +57,21 @@ type Attempt<T> = { ok: true; value: T; checks: Record<string, boolean>; model: 
 /** 1차 → (API 오류면 haiku-4-5 / 검증 실패면 같은 모델) 2차 1번. */
 export async function generate<T>(
   system: string, user: string, maxTokens: number, check: (obj: unknown) => Checked<T>, create: CreateFn, onCall?: Deps["onCall"],
+  onCheck?: Deps["onCheck"],
 ): Promise<Attempt<T>> {
   const primary = PRIMARY_MODEL();
+  let attempt = 0;
   const once = async (model: string, isPrimary: boolean): Promise<{ kind: "api_error" } | { kind: "invalid"; checks: Record<string, boolean> | null } | { kind: "ok"; value: T; checks: Record<string, boolean> }> => {
     const t0 = Date.now();
+    attempt++;
     try {
       const msg = await create(buildBody(model, system, user, maxTokens, isPrimary));
       const ms = Date.now() - t0;
       onCall?.({ model, ok: true, ms, input_tokens: msg.usage?.input_tokens ?? 0, output_tokens: msg.usage?.output_tokens ?? 0 });
       const text = textOf(msg);
-      if (text === null) return { kind: "invalid", checks: null };
+      if (text === null) { onCheck?.({ model, attempt, checks: null, passed: false }); return { kind: "invalid", checks: null }; }
       const c = check(parseJsonText(text));
+      onCheck?.({ model, attempt, checks: c.checks, passed: c.passed, raw: text });
       return c.passed && c.value !== null ? { kind: "ok", value: c.value, checks: c.checks } : { kind: "invalid", checks: c.checks };
     } catch (e) {
       const ms = Date.now() - t0;
@@ -146,7 +152,7 @@ export async function understand(req: UnderstandRequest, deps: Deps = {}): Promi
     if (!deps.offline && !take(deps.ip ?? "local").ok) return ruleResponse(text);
     const create = deps.create ?? createFor(apiKey as string);
     const r = await generate(UNDERSTAND_SYSTEM, understandUser(text, req.pattern, req.level), 200,
-      (obj) => validateUnderstand(obj, text), create, deps.onCall);
+      (obj) => validateUnderstand(obj, text), create, deps.onCall, deps.onCheck);
     if (!r.ok) return ruleResponse(text);
     const res: UnderstandResponse = { mode: "live", label: r.value.label, evidence: r.value.evidence, validator: { passed: true, checks: r.checks } };
     if (!deps.offline) cacheSet(key, res);
@@ -176,7 +182,7 @@ export async function helperNote(req: HelperNoteRequest, deps: Deps = {}): Promi
     if (!deps.offline && !take(deps.ip ?? "local").ok) return templateResponse(req);
     const create = deps.create ?? createFor(apiKey as string);
     const r = await generate(HELPERNOTE_SYSTEM, helperNoteUser(req.facts), 300,
-      (obj) => validateHelperNote(obj, req.facts), create, deps.onCall);
+      (obj) => validateHelperNote(obj, req.facts), create, deps.onCall, deps.onCheck);
     if (!r.ok) return templateResponse(req);
     const res: HelperNoteResponse = { mode: "live", summary: r.value.summary, validator: { passed: true, checks: r.checks } };
     if (!deps.offline) cacheSet(key, res);

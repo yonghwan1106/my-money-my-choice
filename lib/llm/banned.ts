@@ -54,9 +54,21 @@ export const GIVEN_NAMES = (
   "예린 수빈 유진 정민 영호 성민 상훈 혜진 미영 은정 경수 동현 재영 태식 수진 하늘 민수 도현 서진 지현"
 ).split(" ");
 
-const JOSA = /(님에게|님께|님이|님은|님을|님|씨에게|씨가|씨는|씨|에게서|에게|한테|께서|께|에서|으로|로|이가|이는|이를|이와|가|는|은|을|를|와|과|의|도|에)$/u;
+const JOSA = /(님에게|님께|님이|님은|님을|님|씨에게|씨가|씨는|씨|에게서|에게|한테|께서|께|에서|으로|이고|이며|이라|이나|이에요|이었|로|이가|이는|이를|이와|가|는|은|을|를|와|과|의|도|에|이|인)$/u;
 const JOSA_ONLY = new RegExp("^(?:" + JOSA.source.slice(1, -2) + ")+$", "u");
-const VERB_END = /[요고다며니갔했었았던됨음함]$/u;
+const VERB_END = /[요고다며니갔했었았던됨음함게해면어되여워렇런]$/u;
+
+/** 사람 이름이 아닌 흔한 낱말의 앞 두 글자(요약 문장에 자주 나오는 것). 이 글자로 시작하면 이름으로 보지 않는다. */
+export const WORD_PREFIX = new Set((
+  "지출 금액 송금 부분 전달 정리 나가 나뉘 나간 주시 이렇 그렇 저렇 이런 그런 기존 최근 평균 합산 누적 연속 반복 지속 유출 구독 공과 " +
+  "모바 지급 입금 출금 인출 수령 수입 변동 증가 감소 일부 대부 전액 한도 장기 생활 생계 주거 장애 공제 보험 이자 원금 상환 할부 단말 " +
+  "사용 거래 계좌 은행 금방 금세 직후 직전 이전 이후 무렵 사이 가량 약간 다수 소량 소액 고액 매주 매달 매일 차례 주기 집중 나흘 주간 월간 " +
+  "확인 내역 내용 기록 신규 신청 도움 함께 한번 한꺼 조금 계속 정도 이상 이하 미만 초과 주의 살펴 경우 상황 사항 사실 문제 변화 차이 비교 " +
+  "단계 알림 안내 연락 허락 본인 사람 모두 전체 전부 이미 아직 다시 또한 그리 하지 그래 그런 평소 이번 같은 처음 한주 한달 월급 수당 대출 " +
+  "현금 결제 요금 휴대 통신 자동 정기 고정 일정 당일 하루 이틀 사흘 며칠 주말 오늘 어제 지난 동안 기간 합계 총액 전보 보다 훨씬 아주 크게 " +
+  "작은 많이 많은 여러 몇번 번에 쓰던 쓰는 쓰였 보낸 보내 받은 받고 들어 생겼 생긴 있었 없었 있어 없어 되었 되어 이어 이었 했고 하고 " +
+  "새로 새요 한번 한도 가전 구매 구입 선물 경조 이사 여행 바로 곧바 주로 주된 주요 주마 정해 정한 성인"
+).split(" "));
 
 /**
  * 한글 토큰이 사람 이름처럼 보이는지(§6-7 no_name). 조사를 뗀 2~4자, 성 목록으로 시작, 흔한 낱말이 아님,
@@ -78,6 +90,7 @@ export function nameOf(token: string): string | null {
   if (COMMON_WORDS.has(t)) return null;
   if (GIVEN_NAMES.some((g) => t.includes(g)) && (SURNAMES_1.includes(t[0]) || t.length === 2)) return t;
   if (VERB_END.test(t)) return null;
+  if (WORD_PREFIX.has(t.slice(0, 2))) return null;
   const surname = (t.length >= 3 && SURNAMES_2.includes(t.slice(0, 2))) || SURNAMES_1.includes(t[0]);
   if (!surname) return null;
   for (const w of COMMON_WORDS) if (w.length >= 2 && t.startsWith(w)) return null;
