@@ -1,0 +1,120 @@
+{"id":"u001","text":"[H1] 생일이라 선물 사 주고 싶어서 보냈어요","label":"my_choice","split":"dev","tag":"plain"}
+{"id":"u002","text":"내가 갖고 싶어서 샀어요","label":"my_choice","split":"dev","tag":"plain"}
+{"id":"u003","text":"냉장고가 고장 나서 내가 새로 샀어요","label":"my_choice","split":"dev","tag":"plain"}
+{"id":"u004","text":"친구랑 놀러 가려고 내가 돈 낸 거예요","label":"my_choice","split":"test","tag":"plain"}
+{"id":"u005","text":"엄마한테 용돈 드리고 싶어서 보냈어요","label":"my_choice","split":"test","tag":"plain"}
+{"id":"u006","text":"제가 먹고 싶어서 치킨 시켰어요","label":"my_choice","split":"test","tag":"plain"}
+{"id":"u007","text":"게임 아이템 사고 싶어서 내가 결제했어요","label":"my_choice","split":"test","tag":"plain"}
+{"id":"u008","text":"[상대1]이 이사 간다고 해서 내가 선물로 보냈어요","label":"my_choice","split":"test","tag":"plain"}
+{"id":"u009","text":"모아 둔 돈으로 내가 운동화 샀어요","label":"my_choice","split":"test","tag":"plain"}
+{"id":"u010","text":"교회 헌금 내가 하고 싶어서 냈어요","label":"my_choice","split":"test","tag":"plain"}
+{"id":"u011","text":"누가 시킨 거 아니에요. 내가 주고 싶었어요","label":"my_choice","split":"dev","tag":"negation"}
+{"id":"u012","text":"달라고 한 사람 없어요. 그냥 제가 보낸 거예요","label":"my_choice","split":"test","tag":"negation"}
+{"id":"u013","text":"[상대1]이 하라고 한 거 아니고 내가 사고 싶었어요","label":"my_choice","split":"test","tag":"negation"}
+{"id":"u014","text":"억지로 한 거 아니에요 제가 원해서 했어요","label":"my_choice","split":"test","tag":"negation"}
+{"id":"u015","text":"[H1]이 같이 가 줬고 내가 사고 싶어서 샀어요","label":"my_choice","split":"dev","tag":"mixed"}
+{"id":"u016","text":"[상대1]이 좋다고 알려 줬는데 사는 건 내가 정했어요","label":"my_choice","split":"dev","tag":"mixed"}
+{"id":"u017","text":"형이 돈 없다고 해서 내가 먼저 주고 싶다고 했어요","label":"my_choice","split":"test","tag":"mixed"}
+{"id":"u018","text":"선생님이 괜찮냐고 물어봤는데 내가 하고 싶어서 한 거라고 했어요","label":"my_choice","split":"test","tag":"mixed"}
+{"id":"u019","text":"내가 사고십어서 샀어요","label":"my_choice","split":"dev","tag":"typo"}
+{"id":"u020","text":"선뮬로 보냇어요 내가 주고 싶어서","label":"my_choice","split":"test","tag":"typo"}
+{"id":"u021","text":"제가 원해서 햇어요","label":"my_choice","split":"test","tag":"typo"}
+{"id":"u022","text":"선물이에요","label":"my_choice","split":"dev","tag":"short"}
+{"id":"u023","text":"내가 샀어요","label":"my_choice","split":"test","tag":"short"}
+{"id":"u024","text":"주고 싶었어요","label":"my_choice","split":"test","tag":"short"}
+{"id":"u025","text":"[상대1]이 돈 빌려 달라고 해서 보냈어요","label":"asked_by_someone","split":"dev","tag":"plain"}
+{"id":"u026","text":"선생님이 달라고 해서 줬어요","label":"asked_by_someone","split":"dev","tag":"plain"}
+{"id":"u027","text":"친구가 휴대폰 하나 더 만들어 달래서 만들었어요","label":"asked_by_someone","split":"dev","tag":"plain"}
+{"id":"u028","text":"[상대1]이 대출 받으라고 해서 받았어요","label":"asked_by_someone","split":"test","tag":"plain"}
+{"id":"u029","text":"형이 월급 들어오면 보내라고 했어요","label":"asked_by_someone","split":"test","tag":"plain"}
+{"id":"u030","text":"[상대1]이 카드 좀 쓰자고 해서 빌려줬어요","label":"asked_by_someone","split":"test","tag":"plain"}
+{"id":"u031","text":"아는 사람이 부탁해서 돈을 찾아 줬어요","label":"asked_by_someone","split":"test","tag":"plain"}
+{"id":"u032","text":"[상대1]이 게임 충전 해 달래서 해 줬어요","label":"asked_by_someone","split":"test","tag":"plain"}
+{"id":"u033","text":"사장님이 월급 다시 돌려 달래서 보냈어요","label":"asked_by_someone","split":"test","tag":"plain"}
+{"id":"u034","text":"동네 형이 맛있는 거 사 달래서 사 줬어요","label":"asked_by_someone","split":"test","tag":"plain"}
+{"id":"u035","text":"내가 하고 싶어서 한 거 아니에요. [상대1]이 보내라고 했어요","label":"asked_by_someone","split":"dev","tag":"negation"}
+{"id":"u036","text":"제가 원한 건 아니고 형이 하라고 했어요","label":"asked_by_someone","split":"test","tag":"negation"}
+{"id":"u037","text":"내 돈 쓰고 싶지 않았는데 친구가 사 달라고 했어요","label":"asked_by_someone","split":"test","tag":"negation"}
+{"id":"u038","text":"선물 아니에요. 빌려 달라고 해서 준 거예요","label":"asked_by_someone","split":"test","tag":"negation"}
+{"id":"u039","text":"[상대1]이 빌려 달래서 나도 도와주고 싶어서 보냈어요","label":"asked_by_someone","split":"dev","tag":"mixed"}
+{"id":"u040","text":"형이 달라고 했는데 나도 주고 싶었어요","label":"asked_by_someone","split":"dev","tag":"mixed"}
+{"id":"u041","text":"선생님이 하라고 했고 저도 좋다고 했어요","label":"asked_by_someone","split":"test","tag":"mixed"}
+{"id":"u042","text":"친구가 부탁해서 내가 원해서 해 줬어요","label":"asked_by_someone","split":"test","tag":"mixed"}
+{"id":"u043","text":"형이 빌려달레서 보냇어요","label":"asked_by_someone","split":"dev","tag":"typo"}
+{"id":"u044","text":"[상대1]이 하라그래서 했어요","label":"asked_by_someone","split":"test","tag":"typo"}
+{"id":"u045","text":"선생님이 달라구 해서 줫어요","label":"asked_by_someone","split":"test","tag":"typo"}
+{"id":"u046","text":"형이 달래요","label":"asked_by_someone","split":"dev","tag":"short"}
+{"id":"u047","text":"시켜서요","label":"asked_by_someone","split":"test","tag":"short"}
+{"id":"u048","text":"부탁받았어요","label":"asked_by_someone","split":"test","tag":"short"}
+{"id":"u049","text":"안 보내면 [상대1]이 때린다고 했어요","label":"threatened","split":"dev","tag":"plain"}
+{"id":"u050","text":"형이 화낼까 봐 무서워서 보냈어요","label":"threatened","split":"dev","tag":"plain"}
+{"id":"u051","text":"돈 안 주면 큰일 난다고 해서 무서웠어요","label":"threatened","split":"dev","tag":"plain"}
+{"id":"u052","text":"[상대1]이 소리 질러서 겁이 났어요","label":"threatened","split":"test","tag":"plain"}
+{"id":"u053","text":"안 하면 혼난다고 해서 했어요","label":"threatened","split":"test","tag":"plain"}
+{"id":"u054","text":"선생님이 안 주면 일 못 하게 한다고 했어요","label":"threatened","split":"test","tag":"plain"}
+{"id":"u055","text":"[상대1]이 집에 찾아온다고 해서 무서워요","label":"threatened","split":"test","tag":"plain"}
+{"id":"u056","text":"맞을까 봐 그냥 줬어요","label":"threatened","split":"test","tag":"plain"}
+{"id":"u057","text":"형이 때려서 돈 줬어요","label":"threatened","split":"test","tag":"plain"}
+{"id":"u058","text":"돈 안 보내면 가만 안 둔다고 했어요","label":"threatened","split":"test","tag":"plain"}
+{"id":"u059","text":"내가 주고 싶어서 준 거 아니에요. 무서워서 줬어요","label":"threatened","split":"dev","tag":"negation"}
+{"id":"u060","text":"괜찮지 않아요. [상대1]이 화내서 무서워요","label":"threatened","split":"test","tag":"negation"}
+{"id":"u061","text":"싫다고 했는데 안 주면 때린다고 했어요","label":"threatened","split":"test","tag":"negation"}
+{"id":"u062","text":"선물 아니에요, 안 주면 혼나요","label":"threatened","split":"test","tag":"negation"}
+{"id":"u063","text":"[상대1]이 빌려 달라고 했는데 안 주면 화낸다고 했어요","label":"threatened","split":"dev","tag":"mixed"}
+{"id":"u064","text":"형이 보내라고 하면서 소리 질렀어요","label":"threatened","split":"dev","tag":"mixed"}
+{"id":"u065","text":"친구가 부탁했는데 안 들어주면 무서운 일 생길 것 같았어요","label":"threatened","split":"test","tag":"mixed"}
+{"id":"u066","text":"선생님이 하라고 했고 안 하면 혼날까 봐 했어요","label":"threatened","split":"test","tag":"mixed"}
+{"id":"u067","text":"무서워서 보냇어요","label":"threatened","split":"dev","tag":"typo"}
+{"id":"u068","text":"안주면 떄린다고 했어요","label":"threatened","split":"test","tag":"typo"}
+{"id":"u069","text":"형이 화내서 겁낫어요","label":"threatened","split":"test","tag":"typo"}
+{"id":"u070","text":"무서워요","label":"threatened","split":"dev","tag":"short"}
+{"id":"u071","text":"맞기 싫어서요","label":"threatened","split":"test","tag":"short"}
+{"id":"u072","text":"혼나요","label":"threatened","split":"test","tag":"short"}
+{"id":"u073","text":"왜 보냈는지 잘 모르겠어요","label":"not_sure","split":"dev","tag":"plain"}
+{"id":"u074","text":"기억이 안 나요","label":"not_sure","split":"dev","tag":"plain"}
+{"id":"u075","text":"언제 보냈는지 헷갈려요","label":"not_sure","split":"dev","tag":"plain"}
+{"id":"u076","text":"누가 가져갔는지 모르겠어요","label":"not_sure","split":"test","tag":"plain"}
+{"id":"u077","text":"그 돈 어디 갔는지 몰라요","label":"not_sure","split":"test","tag":"plain"}
+{"id":"u078","text":"제가 한 건지 기억이 잘 안 나요","label":"not_sure","split":"test","tag":"plain"}
+{"id":"u079","text":"휴대폰 요금이 왜 많은지 모르겠어요","label":"not_sure","split":"test","tag":"plain"}
+{"id":"u080","text":"대출이 뭔지 잘 몰라요","label":"not_sure","split":"test","tag":"plain"}
+{"id":"u081","text":"그때 일이 잘 생각 안 나요","label":"not_sure","split":"test","tag":"plain"}
+{"id":"u082","text":"통장에 돈이 왜 없는지 모르겠어요","label":"not_sure","split":"test","tag":"plain"}
+{"id":"u083","text":"내가 한 건 아닌 것 같은데 잘 모르겠어요","label":"not_sure","split":"dev","tag":"negation"}
+{"id":"u084","text":"누가 하라고 했는지 아닌지 기억이 안 나요","label":"not_sure","split":"test","tag":"negation"}
+{"id":"u085","text":"선물은 아니었던 것 같은데 헷갈려요","label":"not_sure","split":"test","tag":"negation"}
+{"id":"u086","text":"무서운 건 아닌데 왜 그랬는지 모르겠어요","label":"not_sure","split":"test","tag":"negation"}
+{"id":"u087","text":"[상대1]이 뭐라고 했는데 무슨 말인지 몰랐어요","label":"not_sure","split":"dev","tag":"mixed"}
+{"id":"u088","text":"형이 말한 것 같기도 하고 아닌 것 같기도 해요","label":"not_sure","split":"dev","tag":"mixed"}
+{"id":"u089","text":"[H1]한테 물어봐야 알 것 같아요","label":"not_sure","split":"test","tag":"mixed"}
+{"id":"u090","text":"제가 보냈는데 왜 보냈는지 헷갈려요","label":"not_sure","split":"test","tag":"mixed"}
+{"id":"u091","text":"잘 모르겟어요","label":"not_sure","split":"dev","tag":"typo"}
+{"id":"u092","text":"기억이 안나요","label":"not_sure","split":"test","tag":"typo"}
+{"id":"u093","text":"햇갈려요","label":"not_sure","split":"test","tag":"typo"}
+{"id":"u094","text":"몰라요","label":"not_sure","split":"dev","tag":"short"}
+{"id":"u095","text":"글쎄요","label":"not_sure","split":"test","tag":"short"}
+{"id":"u096","text":"모르겠어요","label":"not_sure","split":"test","tag":"short"}
+{"id":"u097","text":"오늘 점심 맛있었어요","label":"unclear","split":"dev","tag":"plain"}
+{"id":"u098","text":"내일 작업장 가요","label":"unclear","split":"dev","tag":"plain"}
+{"id":"u099","text":"날씨가 추워요","label":"unclear","split":"dev","tag":"plain"}
+{"id":"u100","text":"버스 타고 왔어요","label":"unclear","split":"test","tag":"plain"}
+{"id":"u101","text":"텔레비전 보고 싶어요","label":"unclear","split":"test","tag":"plain"}
+{"id":"u102","text":"[H1] 언제 와요","label":"unclear","split":"test","tag":"plain"}
+{"id":"u103","text":"배고파요","label":"unclear","split":"test","tag":"plain"}
+{"id":"u104","text":"노래 듣는 거 좋아해요","label":"unclear","split":"test","tag":"plain"}
+{"id":"u105","text":"강아지 귀여워요","label":"unclear","split":"test","tag":"plain"}
+{"id":"u106","text":"이거 어떻게 끄는 거예요","label":"unclear","split":"test","tag":"plain"}
+{"id":"u107","text":"아니요","label":"unclear","split":"dev","tag":"negation"}
+{"id":"u108","text":"그런 거 아니에요","label":"unclear","split":"test","tag":"negation"}
+{"id":"u109","text":"안 할래요","label":"unclear","split":"test","tag":"negation"}
+{"id":"u110","text":"싫어요 말 안 할래요","label":"unclear","split":"test","tag":"negation"}
+{"id":"u111","text":"형이 오늘 밥 사 줬어요 맛있었어요","label":"unclear","split":"dev","tag":"mixed"}
+{"id":"u112","text":"선생님이 내일 오라고 했어요","label":"unclear","split":"dev","tag":"mixed"}
+{"id":"u113","text":"[상대1]은 좋은 사람이에요 같이 게임해요","label":"unclear","split":"test","tag":"mixed"}
+{"id":"u114","text":"엄마가 전화했어요 내일 만나요","label":"unclear","split":"test","tag":"mixed"}
+{"id":"u115","text":"오늘 비와여","label":"unclear","split":"dev","tag":"typo"}
+{"id":"u116","text":"졸려여","label":"unclear","split":"test","tag":"typo"}
+{"id":"u117","text":"ㅋㅋㅋ","label":"unclear","split":"test","tag":"typo"}
+{"id":"u118","text":"네","label":"unclear","split":"dev","tag":"short"}
+{"id":"u119","text":"음","label":"unclear","split":"test","tag":"short"}
+{"id":"u120","text":"응 그래","label":"unclear","split":"test","tag":"short"}
